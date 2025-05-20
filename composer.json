@@ -1,0 +1,9 @@
+{
+    "name": "otmanekhrouf/gestion_facturation",
+    "autoload": {
+        "psr-4": {
+            "Otmanekhrouf\\GestionFacturation\\": "src/"
+        }
+    },
+    "require": {}
+}
