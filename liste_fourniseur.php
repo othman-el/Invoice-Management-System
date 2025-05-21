@@ -9,9 +9,14 @@
       type="text/css">
     <title>Document</title>
 </head>
+
      <?php
        include './front/head_front.php';
      ?>
+     <div class="container py-2">
+      <a href="ajouter_fourniseur.php" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i>
+      Ajouter Fourniseur</a>
+     </div>
      
 </body>
 </html>
