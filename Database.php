@@ -1,9 +1,6 @@
 <?php
 
-$host = 'localhost';
-$port = '3306';
-$dbname = 'sgf';
-$username = 'root';
+$host =   
 $password = '';
 
 try {
