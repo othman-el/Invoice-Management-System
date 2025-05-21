@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mer. 21 mai 2025 à 10:57
+-- Généré le : mer. 21 mai 2025 à 15:06
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -41,6 +41,30 @@ CREATE TABLE IF NOT EXISTS `liste_fourniseur_client` (
   `ROLE` enum('Fourniseur','Client') NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `fname` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `lname` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `users`
+--
+
+INSERT INTO `users` (`id`, `fname`, `lname`, `email`, `password`) VALUES
+(1, 'otm', 'om', 'test@gmail.com', '$2y$10$VoB.5PYShzRqdocNmDFIT.iiFtseAOC.H8.IhjmhIV3WOAu4Ltocq'),
+(2, ' test1', 'mmm', 'ehhfjf@gmail.com', '$2y$10$qJGfCeXVGlE2teBLHlivZuIKrXNH2b6xGT2wYFe.xtKVLh5/5JBL6');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
