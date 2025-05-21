@@ -142,7 +142,7 @@ $stmt = $pdo->prepare($sql);
                         </div>
                     </div>
                     <div class="mb-4 row align-items-center">
-                        <input type="hidden" name="role" value="Fournisseur">
+                        <input type="hidden" name="role" value="Client">
                     </div>
                     <div class="row mt-5">
                         <div class="col-12 text-center">
