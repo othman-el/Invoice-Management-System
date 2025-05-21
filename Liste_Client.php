@@ -27,8 +27,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <table class="table table-striped table-bordered">
     <thead class="bg-primary text-center">
         <tr>
-            <th class="text-white">ID</th>
-            <th class="text-white">Nom de l'entreprise</th>
+            <th class="text-white">ID </th>
+            <th class="text-white">Nom de l'entreprise </th>
             <th class="text-white">ICE</th>
             <th class="text-white">Adresse</th>
             <th class="text-white">Email</th>
