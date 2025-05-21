@@ -1,6 +1,6 @@
 <?php
   include_once 'Database.php';
-  $sql = "SELECT ID,NameEntreprise,ICE,Adresse,Email,Contact,NumeroGSM,NumeroFixe,Activite FROM users where role='Fournisseur' ";
+  $sql = "SELECT ID,NameEntreprise,ICE,Adresse,Email,Contact,NumeroGSM,NumeroFixe,Activite FROM liste_fourniseur_client where role='Fournisseur' ";
   $stmt = $pdo->prepare($sql);
   $stmt->execute();
   $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
