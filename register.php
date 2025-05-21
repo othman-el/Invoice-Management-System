@@ -3,31 +3,35 @@ session_start();
 require_once 'Database.php';
 
 $errors = [];
-
+$success_message = "";
+ 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $fname = trim($_POST['fname']);
-    $lname = trim($_POST['lname']);
-    $username = trim($_POST['username']);
+    $fname = htmlspecialchars($_POST['fname']);
+    $lname = htmlspecialchars($_POST['lname']);
+    $email = htmlspecialchars($_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    if (empty($username) || empty($_POST['password'])) {
-        $errors[] = 'Please fill all fields.';
-    } else {
-        $stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-        if ($stmt->execute([$username, $password])) {
-            header("Location: login.php");
-            exit;
-        } else {
-            $errors[] = 'Username might already exist.';
-        }
-    }
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->execute([$email]);
+    if ($stmt->rowCount() > 0) {
+        $errors[] = "L'e-mail existe déjà";
+} else {
+
+$stmt = $pdo->prepare("INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)");
+if ($stmt->execute([$fname, $lname, $email, $password])) {
+$success_message = "Inscription réussie ! Vous pouvez maintenant vous connecter";
+} else {
+$errors[] = "L'enregistrement a échoué. Veuillez réessayer";
 }
+}
+}
+
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Signup</title>
+    <title>S'inscrire</title>
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -55,7 +59,7 @@ h2 {
     margin-bottom: 1rem;
     color: #0d6efd;
 }
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"] ,input[type="email"] {
     width: 100%;
     padding: 0.5rem;
     margin: 0.5rem 0;
@@ -82,17 +86,33 @@ button:hover {
 <div class="form-container">
     <h2>Créer un compte</h2>
     <?php if ($errors): ?>
-        <div class="error"><?= implode('<br>', $errors) ?></div>
+        <div class="error"></div>
     <?php endif; ?>
     <form method="post">
-        <input type="text" name="fname" placeholder="First Name" required><br>
-        <input type="text" name="lname" placeholder="Last Name" required><br>
-        <input type="text" name="username" placeholder="Username" required><br>
+        <input type="text" name="fname" placeholder="Nom" required><br>
+        <input type="text" name="lname" placeholder="Prénom" required><br>
+        <input type="email" name="email" placeholder="E-mail" required><br>
         <input type="password" name="password" placeholder="Password" required><br>
 
         <button type="submit">S'inscrire</button>
     </form>
-    <p>Vous avez déjà un compte ? <a href="connexion.php">Login</a></p>
+    <p>Vous avez déjà un compte ? <a href="connexion.php">Connexion</a></p>
+
+
+     <?php if ($errors): ?> 
+            <div class="errors">
+                    <?php foreach ($errors as $error): ?>
+                        <p style="color: red;"><?php echo $error; ?></p> 
+                    <?php endforeach; ?>
+            </div>
+                    <?php endif; ?>                   
+        <?php if ($success_message){ ?>
+            <div class="success">
+                    <p style="color: green;"><?php echo $success_message; ?></p>
+            </div> 
+        <?php } ?> 
 </div>
 </body>
 </html>
+
+
