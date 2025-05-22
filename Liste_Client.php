@@ -6,7 +6,7 @@ $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
@@ -15,7 +15,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet"
         type="text/css">
-    <title>Document</title>
+    <title>Liste Client</title>
 </head>
 <?php
        include './front/head_front.php';
@@ -27,8 +27,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <table class="table table-striped table-bordered">
     <thead class="bg-primary text-center">
         <tr>
-            <th class="text-white">ID</th>
-            <th class="text-white">Nom de l'entreprise</th>
+            <th class="text-white">C N°</th>
+            <th class="text-white">Nom de l'entreprise </th>
             <th class="text-white">ICE</th>
             <th class="text-white">Adresse</th>
             <th class="text-white">Email</th>
