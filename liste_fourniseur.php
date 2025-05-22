@@ -1,6 +1,6 @@
 <?php
   include_once 'Database.php';
-  $sql = "SELECT ID,NameEntreprise,ICE,Adresse,Email,Contact,NumeroGSM,NumeroFixe,Activite FROM users where role='Fournisseur' ";
+  $sql = "SELECT ID,NameEntreprise,ICE,Adresse,Email,Contact,NumeroGSM,NumeroFixe,Activite FROM liste_fourniseur_client where role='Fournisseur' ";
   $stmt = $pdo->prepare($sql);
   $stmt->execute();
   $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -55,8 +55,7 @@
             <td><?= htmlspecialchars($user['NumeroFixe']) ?></td>
             <td><?= htmlspecialchars($user['Activite']) ?></td>
             <td class="text-center">
-                <a href="modifier_utilisateur.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-warning me-1"
-                    title="Modifier">
+                <a href="modification.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-warning me-1">
                     <i class="fa-solid fa-pen"></i>
                 </a>
                 <a href="supprimer_utilisateur.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-danger"
