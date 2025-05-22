@@ -24,6 +24,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <a href="ajouter_client.php" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i>
         Ajouter Client</a>
 </div>
+
+<form action="" method="get">
+      
 <table class="table table-striped table-bordered">
     <thead class="bg-primary text-center">
         <tr>
@@ -72,6 +75,9 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
     </tbody>
 </table>
+
+</form>
+
 </body>
 
 </html>
