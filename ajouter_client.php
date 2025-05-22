@@ -63,12 +63,12 @@ $stmt = $pdo->prepare($sql);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter Fournuiseur</title>
+    <title>Ajouter Client</title>
 </head>
 
 <body>
@@ -84,14 +84,14 @@ $stmt = $pdo->prepare($sql);
                         <label for="name" class="col-sm-4 col-form-label text-end">Nom de l'entrprise :</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                id="name" name="name">
+                                id="name" name="name" required >
                         </div>
                     </div>
                     <div class="mb-4 row align-items-center">
                         <label for="ice" class="col-sm-4 col-form-label text-end">ICE :</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                id="ice" name="ice">
+                                id="ice" name="ice" required >
                         </div>
                     </div>
 
@@ -99,7 +99,7 @@ $stmt = $pdo->prepare($sql);
                         <label for="adresse" class="col-sm-4 col-form-label text-end">Adresse :</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                id="adresse" name="adresse">
+                                id="adresse" name="adresse" required>
                         </div>
                     </div>
 
@@ -107,7 +107,7 @@ $stmt = $pdo->prepare($sql);
                         <label for="email" class="col-sm-4 col-form-label text-end">Email :</label>
                         <div class="col-sm-8">
                             <input type="email" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                id="email" name="email">
+                                id="email" name="email" required>
                         </div>
                     </div>
 
@@ -115,12 +115,12 @@ $stmt = $pdo->prepare($sql);
                         <label for="contact" class="col-sm-4 col-form-label text-end">Contact :</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                id="contact" name="contact">
+                                id="contact" name="contact" required>
                         </div>
                     </div>
 
                     <div class="mb-4 row align-items-center">
-                        <label for="numeroGSM" class="col-sm-4 col-form-label text-end">Numero GSM:</label>
+                        <label for="numeroGSM" class="col-sm-4 col-form-label text-end">Numero GSM :</label>
                         <div class="col-sm-8">
                             <input type="tel" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
                                 id="numeroGSM" name="numeroGSM">
@@ -128,17 +128,17 @@ $stmt = $pdo->prepare($sql);
                     </div>
 
                     <div class="mb-4 row align-items-center">
-                        <label for="numeroFix" class="col-sm-4 col-form-label text-end">Numero Fix:</label>
+                        <label for="numeroFix" class="col-sm-4 col-form-label text-end">Numero Fix :</label>
                         <div class="col-sm-8">
                             <input type="tel" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
                                 id="numeroFix" name="numeroFix">
                         </div>
                     </div>
                     <div class="mb-4 row align-items-center">
-                        <label for="activite" class="col-sm-4 col-form-label text-end">Activité:</label>
+                        <label for="activite" class="col-sm-4 col-form-label text-end">Activité :</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                id="activite" name="activite">
+                                id="activite" name="activite" required>
                         </div>
                     </div>
                     <div class="mb-4 row align-items-center">

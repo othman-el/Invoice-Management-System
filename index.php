@@ -1,5 +1,12 @@
+<?php
+session_start();
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +14,7 @@
       integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet"
       type="text/css">
-    <title></title>
+    <title>SGF</title>
 </head>
      <?php
        include './front/head_front.php';

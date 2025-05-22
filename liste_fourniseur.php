@@ -6,7 +6,7 @@
   $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet"
         type="text/css">
-    <title>Document</title>
+    <title>Liste Fournuiseur</title>
 </head>
 
 <?php
@@ -52,7 +52,7 @@
 <table class="table table-striped table-bordered" id="dataTable">
     <thead class="bg-primary text-center">
         <tr>
-            <th class="text-white">ID</th>
+            <th class="text-white">F N°</th>
             <th class="text-white">Nom de l'entreprise</th>
             <th class="text-white">ICE</th>
             <th class="text-white">Adresse</th>

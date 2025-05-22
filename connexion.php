@@ -3,26 +3,32 @@ session_start();
 require_once 'Database.php';
 
 $errors = [];
+$success_message = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username']);
-    $password = $_POST['password'];
+    $email = htmlspecialchars($_POST['email']);
+    $password = htmlspecialchars($_POST['password']);
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$username]);
-    $user = $stmt->fetch();
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user'] = [
+            'fname' => $user['fname'],
+            'lname' => $user['lname'],
+            'email' => $user['email']
+        ];
+        $success_message = "Welcome, " . $user['fname'] . " " . $user['lname'] . "!";
+
         header("Location: index.php");
-        exit;
     } else {
-        $errors[] = "Invalid username or password.";
+        $errors[] = "Wrong email or password.";
     }
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Connexion</title>
@@ -53,7 +59,7 @@ h2 {
     margin-bottom: 1rem;
     color: #0d6efd;
 }
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"] ,input[type="email"] {
     width: 100%;
     padding: 0.5rem;
     margin: 0.5rem 0;
@@ -79,14 +85,27 @@ button:hover {
 <div class="form-container">
     <h2>Connexion</h2>
     <?php if ($errors): ?>
-        <div class="error"><?= implode('<br>', $errors) ?></div>
+        <div class="error"></div>
     <?php endif; ?>
     <form method="post">
-        <input type="text" name="username" placeholder="Nom d'utilisateur" required autofocus ><br>
+        <input type="email" name="email" placeholder="E-mail" required autofocus ><br>
         <input type="password" name="password" placeholder="Mot de passe" required><br>
         <button type="submit">Connexion</button>
     </form>
     <p>No account ? <a href="register.php">S'inscrire</a></p>
+
+    <?php if ($errors): ?> 
+            <div class="errors">
+                    <?php foreach ($errors as $error): ?>
+                        <p style="color: red;"><?php echo $error; ?></p> 
+                    <?php endforeach; ?>
+            </div>
+                    <?php endif; ?>                   
+        <?php if ($success_message){ ?>
+            <div class="success">
+                    <p style="color: green;"><?php echo $success_message; ?></p>
+            </div> 
+        <?php } ?> 
 </div>
 </body>
 </html>
