@@ -14,15 +14,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $activite = $_POST['activite'] ?? '';
     $role = $_POST['role'] ?? '';
 
-    $checkIce = $pdo->prepare("SELECT COUNT(*) FROM users WHERE ice = :ice");
+    $checkIce = $pdo->prepare("SELECT COUNT(*) FROM liste_fourniseur_client WHERE ice = :ice");
     $checkIce->execute([':ice' => $ice]);
     $iceExists = $checkIce->fetchColumn();
 
-    $checkEmail = $pdo->prepare("SELECT COUNT(*) FROM users WHERE Email = :email");
+    $checkEmail = $pdo->prepare("SELECT COUNT(*) FROM liste_fourniseur_client WHERE Email = :email");
     $checkEmail->execute([':email' => $email]);
     $emailExists = $checkEmail->fetchColumn();
 
-    $checkContact = $pdo->prepare("SELECT COUNT(*) FROM users WHERE Contact = :contact");
+    $checkContact = $pdo->prepare("SELECT COUNT(*) FROM liste_fourniseur_client WHERE Contact = :contact");
     $checkContact->execute([':contact' => $contact]);
     $contactExists = $checkContact->fetchColumn();
 
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     elseif ($contactExists) {
         $message = "<p style='color:orange;text-align:center;'>Contact existe déjà.</p>";
     } else {
-     $sql = "INSERT INTO users 
+     $sql = "INSERT INTO liste_fourniseur_client 
         (NameEntreprise, ICE, Adresse, Email, Contact, NumeroGSM, NumeroFixe, Activite, Role)
         VALUES (:name, :ice, :adresse, :email, :contact, :numeroGSM, :numeroFix, :activite, :role)";
 

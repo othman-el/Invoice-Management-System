@@ -58,8 +58,8 @@
                 <a href="modification.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-warning me-1">
                     <i class="fa-solid fa-pen"></i>
                 </a>
-                <a href="supprimer_utilisateur.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-danger"
-                    title="Supprimer" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
+                <a href="supprimer.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-danger" title="Supprimer"
+                    onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
                     <i class="fa-solid fa-trash"></i>
                 </a>
             </td>
