@@ -14,5 +14,9 @@ if($stmt->rowCount() > 0) {
 } else {
     echo "<script>alert('Erreur lors de la suppression du fournisseur ');</script>";
 }
-header('Location: index.php');
+if (isset($_SERVER['HTTP_REFERER'])) {
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
+} else {
+    header('Location: liste_fourniseur.php');
+}
 ?>
