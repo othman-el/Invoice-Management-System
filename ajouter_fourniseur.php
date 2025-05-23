@@ -147,7 +147,7 @@ $stmt = $pdo->prepare($sql);
                     <div class="row mt-5">
                         <div class="col-12 text-center">
                             <button type="submit" class="btn rounded-pill px-5"
-                                style="background-color: #4f57c7; color: white;">SAVE</button>
+                                style="background-color: #4f57c7; color: white;">Enregistrer</button>
                         </div>
                     </div>
                 </form>

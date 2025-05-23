@@ -12,7 +12,7 @@ $stmt->execute();
 if($stmt->rowCount() > 0) {
     echo "<script>alert('Fournisseur supprimé avec succès');</script>";
 } else {
-    echo "<script>alert('Erreur lors de la suppression du fournisseur');</script>";
+    echo "<script>alert('Erreur lors de la suppression du fournisseur ');</script>";
 }
 header('Location: index.php');
 ?>
