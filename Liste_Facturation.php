@@ -57,9 +57,7 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th class="text-white">Numero Fixe</th>
                     <th class="text-white">Activite</th>
                     <th class="text-white">Role</th>
-                    <th class="text-white">N° Devis</th>
-                    <th class="text-white">N° BL</th>
-                    <th class="text-white">N° Facture</th>
+                    <th class="text-white">Type</th>
                     <th class="text-white">Montant HT</th>
                     <th class="text-white">TVA</th>
                     <th class="text-white">Montant TTC</th>
@@ -80,9 +78,7 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?= htmlspecialchars($facture['NumeroFixe']); ?></td>
                     <td><?= htmlspecialchars($facture['Activite']); ?></td>
                     <td><?= htmlspecialchars($facture['Role']); ?></td>
-                    <td><?= htmlspecialchars($facture['N_Devis']); ?></td>
-                    <td><?= htmlspecialchars($facture['N_BL']); ?></td>
-                    <td><?= htmlspecialchars($facture['N_Facture']); ?></td>
+                    <td><?= htmlspecialchars($facture['type']); ?></td>
                     <td><?= htmlspecialchars($facture['Montant_HT']); ?></td>
                     <td><?= htmlspecialchars($facture['TVA']); ?></td>
                     <td><?= htmlspecialchars($facture['Montant_TTC']); ?></td>
@@ -119,6 +115,13 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </tbody>
         </table>
     </div>
+    <div class="text-center">
+        <a href="ajouter_facture.php" class="btn btn-sm btn-primary " title="Ajouter une facture">
+            <i class="fa-solid fa-file-invoice"></i>
+            Ajouter une facture
+        </a>
+    </div>
+
     <script src="recherche.js"></script>
 </body>
 

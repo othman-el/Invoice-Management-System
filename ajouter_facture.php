@@ -1,49 +1,34 @@
 <?php
 include_once 'Database.php';
-
-if (isset($_GET['id'])) {
-    $clientID = $_GET['id'];
-
-    $sql = "SELECT * FROM liste_fourniseur_client WHERE ID = ? ";
+    $sql = "SELECT * FROM liste_fourniseur_client ";
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([$clientID]);
-    $client = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt->execute();
+    $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);      
 
-    if (!$client) {
-        die("Client introuvable.");
-    }
-} else {
-    die("ID client manquant.");
-}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+if (!empty($_POST['ClientID']) && !empty($_POST['fornisseurID']) && !empty($_POST['facteur']) && !empty($_POST['Montant_HT'])) {
     $clientID = $_POST['ClientID'];
-    $n_devis = $_POST['N_Devis'];
-    $n_bl = $_POST['N_BL'];
-    $n_facture = $_POST['N_Facture'];
+    $fornisseurID = $_POST['fornisseurID'];
+    $type = $_POST['facteur'];
     $montantHT = (float)$_POST['Montant_HT'];
-    $tva = 20 ;
+    $tva = 20;
 
     $montantTTC = $montantHT + ($montantHT * $tva / 100);
 
-    $documentPath = null;
-    if (isset($_FILES['Document']) && $_FILES['Document']['error'] == UPLOAD_ERR_OK) {
-        $filename = basename($_FILES['Document']['name']);
-        $destination = 'uploads/' . time() . '_' . $filename;
-        move_uploaded_file($_FILES['Document']['tmp_name'], $destination);
-        $documentPath = $destination;
-    }
-
-    $sql = "INSERT INTO liste_facturation (ClientID, N_Devis, N_BL, N_Facture, Montant_HT, TVA, Montant_TTC, Document) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $sql = "INSERT INTO liste_facturation (ClientID, fornisseurID, Montant_HT, TVA, Montant_TTC, type) 
+            VALUES (?, ?, ?, ?, ?, ?)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
-        $clientID, $n_devis, $n_bl, $n_facture,
-        $montantHT, $tva, $montantTTC, $documentPath
+        $clientID, $fornisseurID, $montantHT, $tva, $montantTTC, $type,
     ]);
 
     echo "<div class='alert alert-success text-center'>Facture enregistrée avec succès</div>";
+} else {
+    echo "<div class='alert alert-danger text-center'>Veuillez remplir tous les champs requis.</div>";
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -58,61 +43,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <?php include './front/head_front.php'; ?>
     <div class="container py-5">
-        <h2 class="text-center mb-4">Ajouter une facture pour le <?= htmlspecialchars($client['Role']) ?> :
-            <?= htmlspecialchars($client['NameEntreprise']) ?></h2>
-        <form method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="ClientID" value="<?= htmlspecialchars($client['ID']) ?>">
-
-            <div class="mb-4 row align-items-center">
-                <label for="N_Devis" class="col-sm-4 col-form-label text-end">N° Devis :</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                        id="N_Devis" name="N_Devis">
+        <h2 class="text-center mb-4">Ajouter une facture :
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-4 row align-items-center">
+                    <label for="client" class="col-sm-2 col-form-label text-end lead">Client :</label>
+                    <div class="col-sm-8">
+                        <select name="ClientID" id="ClientID"
+                            class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
+                            <option value="" disabled selected>Choisir un client</option>
+                            <?php foreach ($clients as $client): ?>
+                            <?php if ($client['Role'] === 'Client'): ?>
+                            <option value="<?php echo htmlspecialchars($client['ID']); ?>">
+                                <?php echo htmlspecialchars($client['NameEntreprise']); ?>
+                            </option>
+                            <?php endif; ?>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <div class="mb-4 row align-items-center">
-                <label for="N_BL" class="col-sm-4 col-form-label text-end">N° BL :</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0" id="N_BL"
-                        name="N_BL">
+                <div class="mb-4 row align-items-center">
+                    <label for="fournisseur" class="col-sm-2 col-form-label text-end lead">Fournisseur :</label>
+                    <div class="col-sm-8">
+                        <select name="fornisseurID" id="fornisseurID"
+                            class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
+                            <option value="" disabled selected>Choisir un fournisseur</option>
+                            <?php foreach ($clients as $client): ?>
+                            <?php if ($client['Role'] === 'Fournisseur'): ?>
+                            <option value="<?php echo htmlspecialchars($client['ID']); ?>">
+                                <?php echo htmlspecialchars($client['NameEntreprise']); ?>
+                            </option>
+                            <?php endif; ?>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <div class="mb-4 row align-items-center">
-                <label for="N_Facture" class="col-sm-4 col-form-label text-end">N° Facture :</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                        id="N_Facture" name="N_Facture">
+                <div class="mb-4 row align-items-center">
+                    <label for="facteur" class="col-sm-2 col-form-label text-end lead">Type :</label>
+                    <div class="col-sm-8">
+                        <select name="facteur" id="facteur"
+                            class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
+                            <option value="" disabled selected>Choisir le type</option>
+                            <option value="devis">Devis</option>
+                            <option value="bl">BL</option>
+                            <option value="facture">Facture</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <div class="mb-4 row align-items-center">
-                <label for="Montant_HT" class="col-sm-4 col-form-label text-end">Montant HT :</label>
-                <div class="col-sm-8">
-                    <input type="number" step="0.01"
-                        class="form-control rounded-pill bg-secondary bg-opacity-25 border-0" id="Montant_HT"
-                        name="Montant_HT">
+                <div class="mb-4 row align-items-center">
+                    <label for="tva" class="col-sm-2 col-form-label text-end lead">TVA (Fixe 20%) :</label>
+                    <div class="col-sm-8">
+                        <input type="number" name="tva" id="tva" value="20"
+                            class="form-control rounded-pill bg-secondary bg-opacity-25 border-0" readonly>
+                    </div>
                 </div>
-            </div>
 
-            <div class="mb-4 row align-items-center">
-                <label for="Document" class="col-sm-4 col-form-label text-end">Document (PDF) :</label>
-                <div class="col-sm-8">
-                    <input type="file" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                        id="Document" name="Document" accept="application/pdf">
+                <div class="mb-4 row align-items-center">
+                    <label for="Montant_HT" class="col-sm-2 col-form-label text-end lead">Montant HT :</label>
+                    <div class="col-sm-8">
+                        <input type="number" step="0.01"
+                            class="form-control rounded-pill bg-secondary bg-opacity-25 border-0" id="Montant_HT"
+                            name="Montant_HT">
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mt-5">
-                <div class="col-12 text-center">
-                    <button type="submit" class="btn rounded-pill px-5"
-                        style="background-color: #4f57c7; color: white;">
-                        Enregistrer la facture
-                    </button>
+
+                <div class="row mt-5">
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn rounded-pill px-5"
+                            style="background-color: #4f57c7; color: white;">
+                            Enregistrer la facture
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+
 
     </div>
 

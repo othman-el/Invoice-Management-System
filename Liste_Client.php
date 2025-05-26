@@ -82,10 +82,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
                     <i class="fa-solid fa-trash"></i>
                 </a>
-                <a href="ajouter_facture.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-primary "
-                    title="Ajouter une facture">
-                    <i class="fa-solid fa-file-invoice"></i>
-                </a>
             </td>
         </tr>
         <?php endforeach; ?>
