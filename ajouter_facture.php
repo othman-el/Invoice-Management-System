@@ -1,4 +1,8 @@
 <?php
+require 'vendor/autoload.php';
+
+use setasign\Fpdi\Fpdi;
+
 include_once 'Database.php';
 
 if (isset($_GET['id'])) {
@@ -16,6 +20,7 @@ if (isset($_GET['id'])) {
     die("ID client manquant.");
 }
 
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $clientID = $_POST['ClientID'];
     $n_devis = $_POST['N_Devis'];
@@ -23,24 +28,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $n_facture = $_POST['N_Facture'];
     $montantHT = (float)$_POST['Montant_HT'];
     $tva = 20 ;
+  
+
 
     $montantTTC = $montantHT + ($montantHT * $tva / 100);
 
-    $documentPath = null;
-    if (isset($_FILES['Document']) && $_FILES['Document']['error'] == UPLOAD_ERR_OK) {
-        $filename = basename($_FILES['Document']['name']);
-        $destination = 'uploads/' . time() . '_' . $filename;
-        move_uploaded_file($_FILES['Document']['tmp_name'], $destination);
-        $documentPath = $destination;
-    }
+    $pdf = new FPDI();
+    $pdf->AddPage();
+    $pdf->setSourceFile("exemple devis.pdf");
+    $template = $pdf->importPage(1);
+    $pdf->useTemplate($template);
 
-    $sql = "INSERT INTO liste_facturation (ClientID, N_Devis, N_BL, N_Facture, Montant_HT, TVA, Montant_TTC, Document) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        $clientID, $n_devis, $n_bl, $n_facture,
-        $montantHT, $tva, $montantTTC, $documentPath
-    ]);
+        $pdf->SetFont('Helvetica');
+        $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetFontSize(10);
+
+       
+        $pdf->SetXY(150, 65);
+        $pdf->Write(0, $client['CodeClient']); 
+
+        
+        $pdf->SetXY(150, 72);
+        $pdf->Write(0, $n_devis);
+
+        
+        $pdf->SetXY(150, 79);
+        $pdf->Write(0, date('d/m/Y')); 
+
+        
+        $pdf->SetXY(150, 86);
+        $pdf->Write(0, $n_facture);
+
+     
+        $pdf->SetXY(160, 185);
+        $pdf->Write(0, number_format($montantHT, 2) . ' DH');
+
+      
+        $pdf->SetXY(160, 190);
+        $pdf->Write(0, '20%');
+
+        
+        $pdf->SetXY(160, 198);
+        $pdf->Write(0, number_format($montantTTC, 2) . ' DH');
+
+       
+        $pdf->SetXY(65, 240);
+        $pdf->Write(0, date('d/m/Y', strtotime('+3 days'))); 
+
+        $filename = 'uploads/facture_' . time() . '.pdf';
+        $pdf->Output('F', $filename); 
+
+    // $documentPath = null;
+    // if (isset($_FILES['Document']) && $_FILES['Document']['error'] == UPLOAD_ERR_OK) {
+    //     $filename = basename($_FILES['Document']['name']);
+    //     $destination = 'uploads/' . time() . '_' . $filename;
+    //     move_uploaded_file($_FILES['Document']['tmp_name'], $destination);
+    //     $documentPath = $destination;
+    // }
+
+            $sql = "INSERT INTO liste_facturation 
+            (ClientID, N_Devis, N_BL, N_Facture, Montant_HT, TVA, Montant_TTC, Document) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+            $clientID, $n_devis, $n_bl, $n_facture,
+            $montantHT, $tva, $montantTTC, $filename
+            ]);
+
 
     echo "<div class='alert alert-success text-center'>Facture enregistrée avec succès</div>";
 }
@@ -96,19 +150,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <div class="mb-4 row align-items-center">
-                <label for="Document" class="col-sm-4 col-form-label text-end">Document (PDF) :</label>
-                <div class="col-sm-8">
-                    <input type="file" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                        id="Document" name="Document" accept="application/pdf">
-                </div>
-            </div>
 
             <div class="row mt-5">
                 <div class="col-12 text-center">
                     <button type="submit" class="btn rounded-pill px-5"
                         style="background-color: #4f57c7; color: white;">
-                        Enregistrer la facture
+                        Generer la facture
                     </button>
                 </div>
             </div>
