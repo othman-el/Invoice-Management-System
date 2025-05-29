@@ -7,25 +7,33 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
-if (!isset($_GET['id'])) {
-    header("Location: items.php");
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    header("Location: liste_factures.php");
     exit;
 }
 
-$id = $_GET['id'];
-$sql = "SELECT * FROM items WHERE ID = ?";
+$id = intval($_GET['id']);
+
+$sql = "SELECT f.*, c.NameEntreprise, c.ICE, c.Adresse, c.Email, c.Contact, c.NumeroGSM, c.NumeroFixe, c.Activite 
+        FROM factures f 
+        JOIN liste_fourniseur_client c ON f.ClientID = c.ID 
+        WHERE f.ID = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$id]);
-$item = $stmt->fetch(PDO::FETCH_ASSOC);
+$facture = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$item) {
-    header("Location: items.php");
+if (!$facture) {
+    header("Location: liste_factures.php");
     exit;
 }
 
-// Calculate additional fields
-$tva_amount = $item['Mt_HT'] * ($item['TVA'] / 100);
-$total_ttc = $item['Mt_HT'] + $tva_amount;
+$sqlItems = "SELECT * FROM facture_items WHERE FactureID = ? ORDER BY ordre ASC";
+$stmtItems = $pdo->prepare($sqlItems);
+$stmtItems->execute([$id]);
+$items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
+
+$tva_amount = $facture['Montant_Total_HT'] * ($facture['TVA'] / 100);
+$total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
 ?>
 
 <!DOCTYPE html>
@@ -33,17 +41,11 @@ $total_ttc = $item['Mt_HT'] + $tva_amount;
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facture - Enrique Technology</title>
-    <!-- Bootstrap CSS -->
+    <title>Facture #<?= htmlspecialchars($facture['N_facture']) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
     body {
         font-family: Arial, sans-serif;
-    }
-
-    .logo {
-        max-height: 80px;
     }
 
     .invoice-title {
@@ -63,20 +65,6 @@ $total_ttc = $item['Mt_HT'] + $tva_amount;
         font-weight: bold;
     }
 
-    .conditions {
-        font-size: 0.9rem;
-        color: #0066cc;
-    }
-
-    .footer-logos img {
-        height: 30px;
-        margin-right: 10px;
-    }
-
-    .qr-code {
-        max-width: 100px;
-    }
-
     @media print {
         .no-print {
             display: none !important;
@@ -86,181 +74,128 @@ $total_ttc = $item['Mt_HT'] + $tva_amount;
 </head>
 
 <body>
-    <!-- Print Button -->
+
+    <!-- Actions -->
     <div class="container mt-3 no-print">
-        <div class="row">
-            <div class="col-12">
-                <a href="items.php" class="btn btn-secondary me-2">
-                    <i class="fas fa-arrow-left"></i> Retour
-                </a>
-                <button onclick="window.print()" class="btn btn-primary me-2">
-                    <i class="fas fa-print"></i> Imprimer
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="Liste_Facturation.php" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                </svg>
+                Retour
+            </a>
+
+            <div class="d-flex gap-2">
+                <button onclick="window.print()" class="btn btn-outline-primary d-flex align-items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                        <path
+                            d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                    </svg>
+                    Imprimer
                 </button>
-                <a href="telecharger_pdf.php?id=<?php echo $item['ID']; ?>" class="btn btn-success" target="_blank">
-                    <i class="fas fa-download"></i> Télécharger PDF
+
+                <a href="telecharger_pdf.php?id=<?= $facture['ID'] ?>"
+                    class="btn btn-outline-success d-flex align-items-center gap-2" target="_blank">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                        <path
+                            d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                    </svg>
+                    Télécharger PDF
                 </a>
             </div>
         </div>
-        <hr>
+        <hr class="my-3">
     </div>
 
+    <!-- Facture -->
     <div class="container mt-5">
-        <!-- Header -->
+        <!-- En-tête -->
         <div class="row mb-4">
             <div class="col-6">
-                <div class="d-flex align-items-center">
-                    <img src="/placeholder.svg?height=80&width=80" alt="Enrique Technology Logo" class="logo me-3">
-                    <div>
-                        <h1 class="text-primary mb-0">ENRIQUE</h1>
-                        <h2 class="text-primary">TECHNOLOGY</h2>
-                    </div>
-                </div>
+                <h1 class="text-primary">ENRIQUE TECHNOLOGY</h1>
+                <p>Entrepôt n° 76, Résidence Chahbae D,<br>Av. Louis Van Beethoven, Tanger - Maroc</p>
+                <p>ICE: 003574700000586</p>
             </div>
             <div class="col-6 text-end">
-                <h1 class="invoice-title">FACTURE</h1>
-                <div class="row">
-                    <div class="col-6 text-start">
-                        <p>Date: <?php echo htmlspecialchars($item['c_date'] ?: date('d/m/Y')); ?></p>
-                        <p>Code client: <?php echo htmlspecialchars($item['code_client']); ?></p>
-                    </div>
-                    <div class="col-6">
-                        <p>N°: <?php echo htmlspecialchars($item['n_facture_c']); ?></p>
-                        <p>N° Devis: <?php echo htmlspecialchars($item['n_devis']); ?></p>
-                    </div>
-                </div>
+                <h1 class="invoice-title"><?= htmlspecialchars($facture['type']) ?></h1>
+                <p>N°: <?= htmlspecialchars($facture['N_facture']) ?></p>
+                <p>Date: <?= date('d/m/Y', strtotime($facture['Date_Creation'])) ?></p>
             </div>
         </div>
 
-        <!-- Sender and Client Info -->
+        <!-- Infos client -->
         <div class="row mb-4">
             <div class="col-6">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h5 class="text-primary mb-0">Émetteur</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-1"><strong>ENRIQUE TECHNOLOGY S.A.R.L</strong></p>
-                        <p class="mb-1">Entrepôt n° 76, Résidence Chahbae D,</p>
-                        <p class="mb-1">Av. Louis Van Beethoven,</p>
-                        <p class="mb-1">Tanger - Maroc</p>
-                        <p class="mb-0">ICE: 003574700000586</p>
-                    </div>
-                </div>
+                <h5 class="text-primary">Client</h5>
+                <p><strong><?= htmlspecialchars($facture['NameEntreprise']) ?></strong></p>
+                <p>Email: <?= htmlspecialchars($facture['Email']) ?></p>
+                <p>Adresse: <?= htmlspecialchars($facture['Adresse']) ?></p>
+                <p>Contact: <?= htmlspecialchars($facture['Contact']) ?></p>
+                <p>ICE: <?= htmlspecialchars($facture['ICE']) ?></p>
             </div>
             <div class="col-6">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h5 class="text-primary mb-0">Client</h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-1"><strong><?php echo htmlspecialchars($item['client']); ?></strong></p>
-                        <p class="mb-1">Code: <?php echo htmlspecialchars($item['code_client']); ?></p>
-                        <p class="mb-0">&nbsp;</p>
-                    </div>
-                </div>
+                <h5 class="text-primary">Informations</h5>
+                <p>TVA: <?= htmlspecialchars($facture['TVA']) ?>%</p>
             </div>
         </div>
 
-        <!-- Invoice Items -->
+        <!-- Items -->
         <div class="row mb-4">
             <div class="col-12">
                 <table class="table table-bordered">
-                    <thead class="table-header">
+                    <thead class="table-header text-center">
                         <tr>
+                            <th>#</th>
                             <th>Désignation</th>
-                            <th class="text-center">Qté</th>
-                            <th class="text-end">Prix Unit. HT</th>
-                            <th class="text-end">Montant HT</th>
+                            <th>Quantité</th>
+                            <th>Prix Unitaire</th>
+                            <th>Total HT</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php foreach ($items as $index => $item): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($item['Designation']); ?></td>
-                            <td class="text-center"><?php echo htmlspecialchars($item['quantite']); ?></td>
-                            <td class="text-end"><?php echo number_format($item['Montant_uHT'], 2); ?></td>
-                            <td class="text-end"><?php echo number_format($item['Mt_HT'], 2); ?></td>
+                            <td class="text-center"><?= $index + 1 ?></td>
+                            <td><?= htmlspecialchars($item['Designation']) ?></td>
+                            <td class="text-center"><?= $item['Quantite'] ?></td>
+                            <td class="text-end"><?= number_format($item['Prix_Unit'], 2) ?>DH</td>
+                            <td class="text-end"><?= number_format($item['Montant_HT'], 2) ?>DH</td>
                         </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Totals -->
-        <div class="row mb-4">
-            <div class="col-7">
-                <?php if (!empty($item['Observation'])): ?>
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h6 class="mb-0">Observations</h6>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-0"><?php echo htmlspecialchars($item['Observation']); ?></p>
-                    </div>
-                </div>
-                <?php endif; ?>
-            </div>
-            <div class="col-5">
+        <!-- Totaux -->
+        <div class="row justify-content-end">
+            <div class="col-md-6">
                 <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <td><strong>Base</strong></td>
-                            <td><strong>Taux</strong></td>
-                            <td><strong>Taxe</strong></td>
-                        </tr>
-                        <tr>
-                            <td><?php echo number_format($item['Mt_HT'], 2); ?></td>
-                            <td><?php echo htmlspecialchars($item['TVA']); ?>%</td>
-                            <td><?php echo number_format($tva_amount, 2); ?></td>
-                        </tr>
-                        <tr class="total-section">
-                            <td colspan="2" class="text-center"><strong>NET A PAYER</strong></td>
-                            <td><strong><?php echo number_format($item['Mt_TTC'], 2); ?></strong></td>
-                        </tr>
-                    </tbody>
+                    <tr>
+                        <th>Sous-total HT</th>
+                        <td class="text-end"><?= number_format($facture['Montant_Total_HT'], 2) ?>DH</td>
+                    </tr>
+                    <tr>
+                        <th>TVA (<?= $facture['TVA'] ?>%)</th>
+                        <td class="text-end"><?= number_format($tva_amount, 2) ?>DH</td>
+                    </tr>
+                    <tr class="total-section">
+                        <th>Total TTC</th>
+                        <td class="text-end"><?= number_format($facture['Montant_Total_TTC'], 2) ?>DH</td>
+                    </tr>
                 </table>
-            </div>
-        </div>
-
-        <!-- Conditions -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <p class="conditions"><strong>Conditions de règlement:</strong> 30 Jours</p>
-                <p class="conditions"><strong>Conditions de paiement:</strong> virement</p>
-                <p class="conditions"><strong>Fournisseur:</strong> <?php echo htmlspecialchars($item['fornisseur']); ?>
-                </p>
-                <p>Nous sommes à votre disposition pour tout complément d'informations.</p>
-                <p>Nous vous prions d'agréer nos salutations distinguées.</p>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="row mt-5">
-            <div class="col-3">
-                <img src="/placeholder.svg?height=100&width=100" alt="QR Code" class="qr-code">
-            </div>
-            <div class="col-5">
-                <div class="footer-logos">
-                    <img src="/placeholder.svg?height=30&width=30" alt="HP">
-                    <img src="/placeholder.svg?height=30&width=30" alt="ZKTeco">
-                    <img src="/placeholder.svg?height=30&width=30" alt="Cisco">
-                    <img src="/placeholder.svg?height=30&width=30" alt="Lenovo">
-                    <img src="/placeholder.svg?height=30&width=30" alt="Dell">
-                    <img src="/placeholder.svg?height=30&width=30" alt="APC">
-                </div>
-            </div>
-            <div class="col-4">
-                <p class="mb-1"><small><strong>ENRIQUE TECHNOLOGY S.A.R.L</strong></small></p>
-                <p class="mb-1"><small>RC : 135901 | Patente : IF 50122250 | CNSS : 9789821</small></p>
-                <p class="mb-1"><small>ICE: 003574700000586 | R.I.B : 011 640 0000282100000887</small></p>
-                <p class="mb-1"><small>Web site: contact@et-maroc.com</small></p>
-                <p class="mb-0"><small>Tél: 212 661 488 187 | 661 435 035</small></p>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/js/all.min.js"></script>
 </body>
 
 </html>
