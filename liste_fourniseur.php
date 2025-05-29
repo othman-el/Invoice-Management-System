@@ -78,7 +78,7 @@
             <td><?= htmlspecialchars($user['NumeroGSM']) ?></td>
             <td><?= htmlspecialchars($user['NumeroFixe']) ?></td>
             <td><?= htmlspecialchars($user['Activite']) ?></td>
-            <td class="text-center">
+            <td class="d-flex justify-content-center gap-2">
                 <a href="modification.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-warning me-1">
                     <i class="fa-solid fa-pen"></i>
                 </a>

@@ -82,6 +82,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
                     <i class="fa-solid fa-trash"></i>
                 </a>
+
             </td>
         </tr>
         <?php endforeach; ?>
