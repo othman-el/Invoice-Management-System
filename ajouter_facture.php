@@ -292,7 +292,7 @@ if (isset($_GET['show_invoices'])) {
             <div class="text-center mt-4">
                 <button type="submit" class="btn px-5 py-2 rounded-pill"
                     style="background-color: #4f57c7; color: white;">
-                    Créer la facture
+                    Ajouter une facture
                 </button>
             </div>
         </form>

@@ -48,8 +48,12 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
             </div>
 
-            <a href="ajouter_facture.php" class="btn btn-sm btn-primary">
-                <i class="fa-solid fa-file-invoice"></i> Ajouter une facture
+            <a href="ajouter_facture.php" class="btn btn-primary btn-sm d-flex align-items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z" />
+                </svg>
+                <span>Ajouter une facture</span>
             </a>
         </div>
 
@@ -71,6 +75,7 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Montant TTC</th>
                     <th>Document</th>
                     <th>Date création</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -103,8 +108,37 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     ?>
                     </td>
                     <td><?= htmlspecialchars($facture['Date_Creation']) ?></td>
-                </tr>
-                <?php endforeach; ?>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <a href="voir_facture.php?id=<?= $facture['ID'] ?>"
+                                class="btn btn-outline-primary btn-sm d-flex align-items-center gap-1"
+                                title="Voir la facture complète">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                    <path
+                                        d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                                </svg>
+                                <span>Voir</span>
+                            </a>
+
+                            <a href="telecharger_pdf.php?id=<?= $facture['ID'] ?>"
+                                class="btn btn-outline-success btn-sm d-flex align-items-center gap-1"
+                                title="Télécharger la facture PDF">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path
+                                        d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                                    <path
+                                        d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                                </svg>
+                                <span>Télécharger</span>
+                            </a>
+                        </div>
+                    </td>
+
+                    <?php endforeach; ?>
             </tbody>
         </table>
 

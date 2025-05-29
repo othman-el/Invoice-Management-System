@@ -8,6 +8,6 @@
     "require": {
         "setasign/fpdf": "^1.8",
         "setasign/fpdi": "^2.6",
-        "dompdf/dompdf": "*"
+        "dompdf/dompdf": "^3.1"
     }
 }

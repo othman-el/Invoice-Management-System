@@ -1,5 +1,6 @@
 <?php
-require_once 'vendor/dompdf/dompdf/autoload.inc.php';
+require_once __DIR__ . '/vendor/autoload.php';
+
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
@@ -11,271 +12,168 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
-if (!isset($_GET['id'])) {
-    header("Location: items.php");
-    exit;
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    die("ID de la facture invalide.");
 }
 
-$id = $_GET['id'];
-$sql = "SELECT * FROM items WHERE ID = ?";
+$id = intval($_GET['id']);
+
+$sql = "SELECT f.*, c.NameEntreprise, c.ICE, c.Adresse, c.Email, c.Contact, c.NumeroGSM, c.NumeroFixe, c.Activite 
+        FROM factures f 
+        JOIN liste_fourniseur_client c ON f.ClientID = c.ID 
+        WHERE f.ID = ?";
 $stmt = $pdo->prepare($sql);
 $stmt->execute([$id]);
-$item = $stmt->fetch(PDO::FETCH_ASSOC);
+$facture = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$item) {
-    header("Location: items.php");
-    exit;
+if (!$facture) {
+    die("Facture introuvable.");
 }
 
-$tva_amount = $item['Mt_HT'] * ($item['TVA'] / 100);
+$sqlItems = "SELECT * FROM facture_items WHERE FactureID = ? ORDER BY ordre ASC";
+$stmtItems = $pdo->prepare($sqlItems);
+$stmtItems->execute([$id]);
+$items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
+
+$tva_amount = $facture['Montant_Total_HT'] * ($facture['TVA'] / 100);
+$total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
 
 try {
     $options = new Options();
-    $options->set('defaultFont', 'Arial');
+    $options->set('defaultFont', 'DejaVu Sans');
     $options->set('isRemoteEnabled', true);
-    $options->set('debugPng', true);
-    $options->set('debugKeepTemp', true);
-    $options->set('debugCss', true);
 
     $dompdf = new Dompdf($options);
 
-    $html = '<!DOCTYPE html>
-    <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <title>Facture - Enrique Technology</title>
-        <style>
-            @page { margin: 1cm; }
-            body {
-                font-family: DejaVu Sans, Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                font-size: 12px;
-                line-height: 1.4;
-                color: #333;
-            }
-            .header {
-                width: 100%;
-                margin-bottom: 30px;
-                border-bottom: 2px solid #00a0c6;
-                padding-bottom: 20px;
-            }
-            .header-left {
-                float: left;
-                width: 48%;
-            }
-            .header-right {
-                float: right;
-                width: 48%;
-                text-align: right;
-            }
-            .company-name {
-                color: #00a0c6;
-                font-size: 24px;
-                font-weight: bold;
-                margin: 5px 0;
-            }
-            .invoice-title {
-                color: #00a0c6;
-                font-size: 36px;
-                font-weight: bold;
-                margin: 0;
-            }
-            .clear { clear: both; }
-            .info-section {
-                width: 100%;
-                margin-bottom: 30px;
-            }
-            .info-box {
-                float: left;
-                width: 48%;
-                border: 1px solid #ddd;
-                margin-bottom: 20px;
-            }
-            .info-box.right {
-                float: right;
-            }
-            .info-header {
-                background-color: #f8f9fa;
-                color: #00a0c6;
-                font-weight: bold;
-                padding: 10px;
-                border-bottom: 1px solid #ddd;
-                margin: 0;
-            }
-            .info-content {
-                padding: 15px;
-            }
-            .items-table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 20px 0;
-            }
-            .items-table th {
-                background-color: #00a0c6;
-                color: white;
-                padding: 12px 8px;
-                text-align: left;
-                border: 1px solid #00a0c6;
-                font-weight: bold;
-            }
-            .items-table td {
-                padding: 10px 8px;
-                border: 1px solid #ddd;
-            }
-            .text-right { text-align: right; }
-            .text-center { text-align: center; }
-            .totals-table {
-                width: 60%;
-                float: right;
-                border-collapse: collapse;
-                margin: 20px 0;
-            }
-            .totals-table td {
-                padding: 8px;
-                border: 1px solid #ddd;
-            }
-            .total-row {
-                background-color: #00a0c6;
-                color: white;
-                font-weight: bold;
-            }
-            .conditions {
-                font-size: 11px;
-                color: #0066cc;
-                margin: 30px 0;
-                clear: both;
-            }
-            .footer {
-                margin-top: 50px;
-                font-size: 10px;
-                text-align: center;
-                border-top: 1px solid #ddd;
-                padding-top: 20px;
-                clear: both;
-            }
-            .observations {
-                background-color: #f8f9fa;
-                padding: 15px;
-                margin: 20px 0;
-                border-left: 4px solid #00a0c6;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="header">
-            <div class="header-left">
-                <h1 class="company-name">ENRIQUE</h1>
-                <h2 class="company-name">TECHNOLOGY</h2>
-            </div>
-            <div class="header-right">
-                <h1 class="invoice-title">FACTURE</h1>
-                <p><strong>Date:</strong> ' . htmlspecialchars($item['c_date'] ?: date('d/m/Y')) . '</p>
-                <p><strong>N°:</strong> ' . htmlspecialchars($item['n_facture_c']) . '</p>
-                <p><strong>Code client:</strong> ' . htmlspecialchars($item['code_client']) . '</p>
-                <p><strong>N° Devis:</strong> ' . htmlspecialchars($item['n_devis']) . '</p>
-            </div>
-            <div class="clear"></div>
-        </div>
+    ob_start();
+    ?>
+<!DOCTYPE html>
+<html lang="fr">
 
-        <div class="info-section">
-            <div class="info-box">
-                <div class="info-header">Émetteur</div>
-                <div class="info-content">
-                    <p><strong>ENRIQUE TECHNOLOGY S.A.R.L</strong></p>
-                    <p>Entrepôt n° 76, Résidence Chahbae D,<br>
-                    Av. Louis Van Beethoven,<br>
-                    Tanger - Maroc<br>
-                    ICE: 003574700000586</p>
-                </div>
-            </div>
-            <div class="info-box right">
-                <div class="info-header">Client</div>
-                <div class="info-content">
-                    <p><strong>' . htmlspecialchars($item['client']) . '</strong></p>
-                    <p>Code: ' . htmlspecialchars($item['code_client']) . '</p>
-                </div>
-            </div>
-            <div class="clear"></div>
-        </div>
-
-        <table class="items-table">
-            <thead>
-                <tr>
-                    <th>Désignation</th>
-                    <th class="text-center">Qté</th>
-                    <th class="text-right">Prix Unit. HT</th>
-                    <th class="text-right">Montant HT</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>' . htmlspecialchars($item['Designation']) . '</td>
-                    <td class="text-center">' . htmlspecialchars($item['quantite']) . '</td>
-                    <td class="text-right">' . number_format($item['Montant_uHT'], 2) . ' DH</td>
-                    <td class="text-right">' . number_format($item['Mt_HT'], 2) . ' DH</td>
-                </tr>
-            </tbody>
-        </table>';
-
-    if (!empty($item['Observation'])) {
-        $html .= '<div class="observations">
-            <h4>Observations:</h4>
-            <p>' . htmlspecialchars($item['Observation']) . '</p>
-        </div>';
+<head>
+    <meta charset="UTF-8">
+    <title>Facture <?= htmlspecialchars($facture['N_facture']) ?></title>
+    <style>
+    body {
+        font-family: DejaVu Sans, sans-serif;
+        font-size: 12px;
     }
 
-    $html .= '<table class="totals-table">
-            <tbody>
-                <tr>
-                    <td><strong>Base</strong></td>
-                    <td><strong>Taux</strong></td>
-                    <td><strong>Taxe</strong></td>
-                </tr>
-                <tr>
-                    <td>' . number_format($item['Mt_HT'], 2) . ' DH</td>
-                    <td>' . htmlspecialchars($item['TVA']) . '%</td>
-                    <td>' . number_format($tva_amount, 2) . ' DH</td>
-                </tr>
-                <tr class="total-row">
-                    <td colspan="2" class="text-center"><strong>NET A PAYER</strong></td>
-                    <td class="text-right"><strong>' . number_format($item['Mt_TTC'], 2) . ' DH</strong></td>
-                </tr>
-            </tbody>
-        </table>
+    h1,
+    h2,
+    h3 {
+        color: #00a0c6;
+    }
 
-        <div class="conditions">
-            <p><strong>Conditions de règlement:</strong> 30 Jours</p>
-            <p><strong>Conditions de paiement:</strong> virement</p>
-            <p><strong>Fournisseur:</strong> ' . htmlspecialchars($item['fornisseur']) . '</p>
-            <br>
-            <p>Nous sommes à votre disposition pour tout complément d\'informations.</p>
-            <p>Nous vous prions d\'agréer nos salutations distinguées.</p>
-        </div>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
 
-        <div class="footer">
-            <p><strong>ENRIQUE TECHNOLOGY S.A.R.L</strong></p>
-            <p>RC : 135901 | Patente : IF 50122250 | CNSS : 9789821</p>
-            <p>ICE: 003574700000586 | R.I.B : 011 640 0000282100000887</p>
-            <p>Web site: contact@et-maroc.com | Tél: 212 661 488 187 | 661 435 035</p>
-        </div>
-    </body>
-    </html>';
+    th {
+        background-color: #00a0c6;
+        color: white;
+        padding: 8px;
+        text-align: left;
+    }
+
+    td {
+        padding: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .totals td {
+        font-weight: bold;
+    }
+
+    .footer {
+        font-size: 10px;
+        text-align: center;
+        margin-top: 30px;
+    }
+    </style>
+</head>
+
+<body>
+    <h1>ENRIQUE TECHNOLOGY</h1>
+    <h2>Facture N° <?= htmlspecialchars($facture['N_facture']) ?></h2>
+    <p><strong>Date :</strong> <?= date('d/m/Y', strtotime($facture['Date_Creation'])) ?></p>
+
+    <h3>Client</h3>
+    <p>
+        <strong><?= htmlspecialchars($facture['NameEntreprise']) ?></strong><br>
+        <?= htmlspecialchars($facture['Adresse']) ?><br>
+        ICE : <?= htmlspecialchars($facture['ICE']) ?><br>
+        Email : <?= htmlspecialchars($facture['Email']) ?><br>
+        GSM : <?= htmlspecialchars($facture['NumeroGSM']) ?><br>
+    </p>
+
+    <h3>Détails</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Désignation</th>
+                <th>Quantité</th>
+                <th>Prix Unit. (HT)</th>
+                <th>Total HT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($items as $index => $item): ?>
+            <tr>
+                <td class="text-center"><?= $index + 1 ?></td>
+                <td><?= htmlspecialchars($item['Designation']) ?></td>
+                <td class="text-center"><?= $item['Quantite'] ?></td>
+                <td class="text-right"><?= number_format($item['Prix_Unit'], 2) ?> €</td>
+                <td class="text-right"><?= number_format($item['Montant_HT'], 2) ?> €</td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <table class="totals" style="width: 50%; float: right;">
+        <tr>
+            <td>Sous-total HT</td>
+            <td class="text-right"><?= number_format($facture['Montant_Total_HT'], 2) ?> €</td>
+        </tr>
+        <tr>
+            <td>TVA (<?= $facture['TVA'] ?>%)</td>
+            <td class="text-right"><?= number_format($tva_amount, 2) ?> €</td>
+        </tr>
+        <tr>
+            <td>Total TTC</td>
+            <td class="text-right"><?= number_format($facture['Montant_Total_TTC'], 2) ?> €</td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        ENRIQUE TECHNOLOGY S.A.R.L<br>
+        ICE: 003574700000586 | RC: 135901 | Patente: IF 50122250 | CNSS: 9789821<br>
+        contact@et-maroc.com | Tél: 212 661 488 187 / 661 435 035
+    </div>
+</body>
+
+</html>
+<?php
+    $html = ob_get_clean();
 
     $dompdf->loadHtml($html);
     $dompdf->setPaper('A4', 'portrait');
     $dompdf->render();
 
-    // Generate filename
-    $filename = 'Facture_' . $item['code_client'] . '_' . $item['n_facture_c'] . '.pdf';
-
-    // Output the PDF
-    $dompdf->stream($filename, [
-        'Attachment' => true
-    ]);
+    $filename = 'Facture_' . $facture['N_facture'] . '.pdf';
+    $dompdf->stream($filename, ['Attachment' => true]);
 
 } catch (Exception $e) {
-    echo "error dans creation du PDF: " . $e->getMessage();
-    echo "<br><a href='items.php'>Retour</a>";
+    echo "Erreur lors de la génération du PDF: " . $e->getMessage();
 }
-?>
