@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $savedItemsCount = count($validItems);
         echo "<script>
-            alert('Facture ajoutée avec succès !\\nN° de facture : {$N_facture}\\nNombre d’articles : {$savedItemsCount}\\nTotal HT : {$totalHT}€\\nTotal TTC : {$totalTTC}€');
+            alert('Facture ajoutée avec succès !\\nN° de facture : {$N_facture}\\nNombre d’articles : {$savedItemsCount}\\nTotal HT : {$totalHT}DH\\nTotal TTC : {$totalTTC}DH');
             window.location.href='ajouter_facture.php';
         </script>";
         
@@ -118,7 +118,7 @@ if (isset($_GET['show_invoices'])) {
             echo "<div style='border: 1px solid #ccc; margin: 10px; padding: 10px;'>";
             echo "<h4>Facture N° : {$facture['N_facture']}</h4>";
             echo "<p>Client : {$facture['client_name']}</p>";
-            echo "<p>Total TTC : {$facture['Montant_Total_TTC']}€</p>";
+            echo "<p>Total TTC : {$facture['Montant_Total_TTC']}DH</p>";
             
             $sqlItems = "SELECT * FROM facture_items WHERE FactureID = ? ORDER BY ordre";
             $stmtItems = $pdo->prepare($sqlItems);
@@ -127,7 +127,7 @@ if (isset($_GET['show_invoices'])) {
             
             echo "<h5>Articles :</h5><ul>";
             foreach ($items as $item) {
-                echo "<li>{$item['Designation']} - Quantité : {$item['Quantite']} - Prix unitaire : {$item['Prix_Unit']}€ - Total HT : {$item['Montant_HT']}€</li>";
+                echo "<li>{$item['Designation']} - Quantité : {$item['Quantite']} - Prix unitaire : {$item['Prix_Unit']}DH - Total HT : {$item['Montant_HT']}DH</li>";
             }
             echo "</ul></div>";
         }
@@ -138,7 +138,7 @@ if (isset($_GET['show_invoices'])) {
 ?>
 
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 
 <head>
     <meta charset="UTF-8">
@@ -199,69 +199,9 @@ if (isset($_GET['show_invoices'])) {
     </style>
 </head>
 
-<!DOCTYPE html>
-<html lang="fr">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter une Facture</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-    .add-row-btn {
-        background-color: #28a745;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 50%;
-        font-size: 18px;
-        cursor: pointer;
-        margin: 5px;
-        transition: background-color 0.3s;
-    }
-
-    .remove-row-btn {
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 50%;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .add-row-btn:hover {
-        background-color: #218838;
-    }
-
-    .remove-row-btn:hover {
-        background-color: #c82333;
-    }
-
-    .table-responsive {
-        overflow-x: auto;
-    }
-
-    .detail-row {
-        background-color: #f8f9fa;
-    }
-
-    .empty-cell {
-        background-color: #e9ecef;
-        border: 1px solid #dee2e6;
-        height: 45px;
-    }
-
-    .detail-indicator {
-        font-size: 0.8em;
-        color: #6c757d;
-        font-style: italic;
-    }
-    </style>
-</head>
-
 <body>
+    <?php include './front/head_front.php'; ?>
+
     <div class="container py-5">
         <h2 class="text-center mb-4">Ajouter une nouvelle facture</h2>
 
@@ -341,10 +281,10 @@ if (isset($_GET['show_invoices'])) {
             <div class="text-center mt-4">
                 <div class="row">
                     <div class="col-md-6">
-                        <strong>Total HT : <span id="total-ht">0.00</span> €</strong>
+                        <strong>Total HT : <span id="total-ht">0.00</span> DH</strong>
                     </div>
                     <div class="col-md-6">
-                        <strong>Total TTC : <span id="total-ttc">0.00</span> €</strong>
+                        <strong>Total TTC : <span id="total-ttc">0.00</span> DH</strong>
                     </div>
                 </div>
             </div>
