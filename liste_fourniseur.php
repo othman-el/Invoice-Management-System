@@ -78,17 +78,13 @@
             <td><?= htmlspecialchars($user['NumeroGSM']) ?></td>
             <td><?= htmlspecialchars($user['NumeroFixe']) ?></td>
             <td><?= htmlspecialchars($user['Activite']) ?></td>
-            <td class="text-center">
+            <td class="d-flex justify-content-center gap-2">
                 <a href="modification.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-warning me-1">
                     <i class="fa-solid fa-pen"></i>
                 </a>
                 <a href="supprimer.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-danger" title="Supprimer"
                     onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
                     <i class="fa-solid fa-trash"></i>
-                </a>
-                <a href="ajouter_facture.php?id=<?= $user['ID'] ?>" class="btn btn-sm btn-primary "
-                    title="Ajouter une facture">
-                    <i class="fa-solid fa-file-invoice"></i>
                 </a>
             </td>
         </tr>

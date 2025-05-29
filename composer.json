@@ -5,5 +5,9 @@
             "Otmanekhrouf\\GestionFacturation\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "setasign/fpdf": "^1.8",
+        "setasign/fpdi": "^2.6",
+        "dompdf/dompdf": "*"
+    }
 }
