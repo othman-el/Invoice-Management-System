@@ -45,18 +45,83 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
     body {
-        font-family: Arial, sans-serif;
+        font-family: DejaVu Sans, sans-serif;
+        font-size: 12px;
+        margin: 20px;
+    }
+
+    .text-primary {
+        color: #0d6efd;
     }
 
     .invoice-title {
         color: #00a0c6;
         font-size: 2.5rem;
         font-weight: bold;
+        margin: 0;
+    }
+
+    .row {
+        display: table;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .col-6 {
+        display: table-cell;
+        width: 50%;
+        vertical-align: top;
+        padding-right: 15px;
+    }
+
+    .col-12 {
+        width: 100%;
+    }
+
+    .text-end {
+        text-align: right;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin: 0 0 10px 0;
+    }
+
+    h5 {
+        color: #0d6efd;
+        font-size: 1rem;
+        margin: 0 0 10px 0;
+    }
+
+    p {
+        margin: 5px 0;
+        line-height: 1.4;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+        padding: 8px;
     }
 
     .table-header {
         background-color: #00a0c6;
         color: white;
+        text-align: center;
     }
 
     .total-section {
@@ -65,10 +130,25 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
         font-weight: bold;
     }
 
+    .justify-content-end {
+        text-align: right;
+    }
+
+    .col-md-6 {
+        width: 50%;
+        margin-left: 50%;
+    }
+
+    .totals-table {
+        width: 100%;
+        margin-top: 20px;
+    }
+
     @media print {
         .no-print {
             display: none !important;
         }
+
     }
     </style>
 </head>
@@ -124,8 +204,20 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
                 <p>ICE: 003574700000586</p>
             </div>
             <div class="col-6 text-end">
-                <h1 class="invoice-title"><?= htmlspecialchars($facture['type']) ?></h1>
-                <p>N°: <?= htmlspecialchars($facture['N_facture']) ?></p>
+                <h1 class="invoice-title">
+                    <?php
+                        if ($facture['type'] == 'bl') {
+                            echo 'Bon de Livraison';
+                        } elseif ($facture['type'] == 'facture') {
+                            echo 'Facture';
+                        } elseif ($facture['type'] == 'devis') {
+                            echo 'Devis';
+                        }
+                    ?>
+                </h1>
+
+                <p>N°: <?= htmlspecialchars($facture['N_facture']) ?>
+                </p>
                 <p>Date: <?= date('d/m/Y', strtotime($facture['Date_Creation'])) ?></p>
             </div>
         </div>
@@ -147,10 +239,10 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
         </div>
 
         <!-- Items -->
-        <div class="row mb-4">
+        <div class="row">
             <div class="col-12">
-                <table class="table table-bordered">
-                    <thead class="table-header text-center">
+                <table class="table-bordered">
+                    <thead class="table-header">
                         <tr>
                             <th>#</th>
                             <th>Désignation</th>
@@ -175,9 +267,9 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
         </div>
 
         <!-- Totaux -->
-        <div class="row justify-content-end">
+        <div class="justify-content-end">
             <div class="col-md-6">
-                <table class="table table-bordered">
+                <table class="table-bordered totals-table">
                     <tr>
                         <th>Sous-total HT</th>
                         <td class="text-end"><?= number_format($facture['Montant_Total_HT'], 2) ?>DH</td>
@@ -193,9 +285,8 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
                 </table>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

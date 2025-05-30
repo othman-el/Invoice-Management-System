@@ -57,12 +57,59 @@ try {
     body {
         font-family: DejaVu Sans, sans-serif;
         font-size: 12px;
+        margin: 20px;
     }
 
-    h1,
-    h2,
-    h3 {
+    .text-primary {
+        color: #0d6efd;
+    }
+
+    .invoice-title {
         color: #00a0c6;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .row {
+        display: table;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .col-6 {
+        display: table-cell;
+        width: 50%;
+        vertical-align: top;
+        padding-right: 15px;
+    }
+
+    .col-12 {
+        width: 100%;
+    }
+
+    .text-end {
+        text-align: right;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin: 0 0 10px 0;
+    }
+
+    h5 {
+        color: #0d6efd;
+        font-size: 1rem;
+        margin: 0 0 10px 0;
+    }
+
+    p {
+        margin: 5px 0;
+        line-height: 1.4;
     }
 
     table {
@@ -71,96 +118,123 @@ try {
         margin-bottom: 20px;
     }
 
-    th {
+    .table-bordered {
+        border: 1px solid #dee2e6;
+    }
+
+    .table-bordered th,
+    .table-bordered td {
+        border: 1px solid #dee2e6;
+        padding: 8px;
+    }
+
+    .table-header {
         background-color: #00a0c6;
         color: white;
-        padding: 8px;
-        text-align: left;
-    }
-
-    td {
-        padding: 8px;
-        border: 1px solid #ccc;
-    }
-
-    .text-right {
-        text-align: right;
-    }
-
-    .text-center {
         text-align: center;
     }
 
-    .totals td {
+    .total-section {
+        background-color: #00a0c6;
+        color: white;
         font-weight: bold;
     }
 
-    .footer {
-        font-size: 10px;
-        text-align: center;
-        margin-top: 30px;
+    .justify-content-end {
+        text-align: right;
+    }
+
+    .col-md-6 {
+        width: 50%;
+        margin-left: 50%;
+    }
+
+    .totals-table {
+        width: 100%;
+        margin-top: 20px;
     }
     </style>
 </head>
 
 <body>
-    <h1>ENRIQUE TECHNOLOGY</h1>
-    <h2>Facture N° <?= htmlspecialchars($facture['N_facture']) ?></h2>
-    <p><strong>Date :</strong> <?= date('d/m/Y', strtotime($facture['Date_Creation'])) ?></p>
-
-    <h3>Client</h3>
-    <p>
-        <strong><?= htmlspecialchars($facture['NameEntreprise']) ?></strong><br>
-        <?= htmlspecialchars($facture['Adresse']) ?><br>
-        ICE : <?= htmlspecialchars($facture['ICE']) ?><br>
-        Email : <?= htmlspecialchars($facture['Email']) ?><br>
-        GSM : <?= htmlspecialchars($facture['NumeroGSM']) ?><br>
-    </p>
-
-    <h3>Détails</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Désignation</th>
-                <th>Quantité</th>
-                <th>Prix Unit. (HT)</th>
-                <th>Total HT</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($items as $index => $item): ?>
-            <tr>
-                <td class="text-center"><?= $index + 1 ?></td>
-                <td><?= htmlspecialchars($item['Designation']) ?></td>
-                <td class="text-center"><?= $item['Quantite'] ?></td>
-                <td class="text-right"><?= number_format($item['Prix_Unit'], 2) ?> €</td>
-                <td class="text-right"><?= number_format($item['Montant_HT'], 2) ?> €</td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-
-    <table class="totals" style="width: 50%; float: right;">
-        <tr>
-            <td>Sous-total HT</td>
-            <td class="text-right"><?= number_format($facture['Montant_Total_HT'], 2) ?> €</td>
-        </tr>
-        <tr>
-            <td>TVA (<?= $facture['TVA'] ?>%)</td>
-            <td class="text-right"><?= number_format($tva_amount, 2) ?> €</td>
-        </tr>
-        <tr>
-            <td>Total TTC</td>
-            <td class="text-right"><?= number_format($facture['Montant_Total_TTC'], 2) ?> €</td>
-        </tr>
-    </table>
-
-    <div class="footer">
-        ENRIQUE TECHNOLOGY S.A.R.L<br>
-        ICE: 003574700000586 | RC: 135901 | Patente: IF 50122250 | CNSS: 9789821<br>
-        contact@et-maroc.com | Tél: 212 661 488 187 / 661 435 035
+    <!-- En-tête -->
+    <div class="row">
+        <div class="col-6">
+            <h1 class="text-primary">ENRIQUE TECHNOLOGY</h1>
+            <p>Entrepôt n° 76, Résidence Chahbae D,<br>Av. Louis Van Beethoven, Tanger - Maroc</p>
+            <p>ICE: 003574700000586</p>
+        </div>
+        <div class="col-6 text-end">
+            <h1 class="invoice-title"><?= htmlspecialchars($facture['type']) ?></h1>
+            <p>N°: <?= htmlspecialchars($facture['N_facture']) ?></p>
+            <p>Date: <?= date('d/m/Y', strtotime($facture['Date_Creation'])) ?></p>
+        </div>
     </div>
+
+    <!-- Infos client -->
+    <div class="row">
+        <div class="col-6">
+            <h5 class="text-primary">Client</h5>
+            <p><strong><?= htmlspecialchars($facture['NameEntreprise']) ?></strong></p>
+            <p>Email: <?= htmlspecialchars($facture['Email']) ?></p>
+            <p>Adresse: <?= htmlspecialchars($facture['Adresse']) ?></p>
+            <p>Contact: <?= htmlspecialchars($facture['Contact']) ?></p>
+            <p>ICE: <?= htmlspecialchars($facture['ICE']) ?></p>
+        </div>
+        <div class="col-6">
+            <h5 class="text-primary">Informations</h5>
+            <p>TVA: <?= htmlspecialchars($facture['TVA']) ?>%</p>
+        </div>
+    </div>
+
+    <!-- Items -->
+    <div class="row">
+        <div class="col-12">
+            <table class="table-bordered">
+                <thead class="table-header">
+                    <tr>
+                        <th>#</th>
+                        <th>Désignation</th>
+                        <th>Quantité</th>
+                        <th>Prix Unitaire</th>
+                        <th>Total HT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($items as $index => $item): ?>
+                    <tr>
+                        <td class="text-center"><?= $index + 1 ?></td>
+                        <td><?= htmlspecialchars($item['Designation']) ?></td>
+                        <td class="text-center"><?= $item['Quantite'] ?></td>
+                        <td class="text-end"><?= number_format($item['Prix_Unit'], 2) ?>DH</td>
+                        <td class="text-end"><?= number_format($item['Montant_HT'], 2) ?>DH</td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Totaux -->
+    <div class="justify-content-end">
+        <div class="col-md-6">
+            <table class="table-bordered totals-table">
+                <tr>
+                    <th>Sous-total HT</th>
+                    <td class="text-end"><?= number_format($facture['Montant_Total_HT'], 2) ?>DH</td>
+                </tr>
+                <tr>
+                    <th>TVA (<?= $facture['TVA'] ?>%)</th>
+                    <td class="text-end"><?= number_format($tva_amount, 2) ?>DH</td>
+                </tr>
+                <tr class="total-section">
+                    <th>Total TTC</th>
+                    <td class="text-end"><?= number_format($facture['Montant_Total_TTC'], 2) ?>DH</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
 </body>
 
 </html>
