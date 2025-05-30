@@ -127,7 +127,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endforeach; ?>
         <?php else: ?>
         <tr>
-            <td colspan="4" class="text-center">Aucun utilisateur trouvé.</td>
+            <td colspan="4" class="text-center">Aucun Fournuiseur trouvé.</td>
         </tr>
         <?php endif; ?>
     </tbody>

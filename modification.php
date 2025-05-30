@@ -130,9 +130,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="col-sm-8">
                             <select name="role" id="role" required
                                 class="form-select rounded-pill bg-secondary bg-opacity-25 border-0">
-                                <option value="" disabled selected>-- Sélectionner un rôle --</option>
-                                <option value="Fournisseur">Fournisseur</option>
-                                <option value="Client">Client</option>
+                                <option value="" disabled selected  >-- Sélectionner un rôle --</option>
+                                <option value="Fournisseur"  >Fournisseur</option>
+                                <option value="Client" >Client</option>
                             </select>
                         </div>
                     </div>
