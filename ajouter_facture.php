@@ -92,11 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->commit();
         
         $savedItemsCount = count($validItems);
-        echo "<script>
-            alert('Facture ajoutée avec succès !\\nN° de facture : {$N_facture}\\nNombre d’articles : {$savedItemsCount}\\nTotal HT : {$totalHT}DH\\nTotal TTC : {$totalTTC}DH');
-            window.location.href='ajouter_facture.php';
-        </script>";
-        
+        header("Location: Liste_Facturation.php");
+        exit();       
     } catch (Exception $e) {
         $pdo->rollBack();
         echo "<script>alert('Erreur lors de l’ajout de la facture : " . $e->getMessage() . "');</script>";
