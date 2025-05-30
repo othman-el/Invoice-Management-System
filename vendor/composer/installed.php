@@ -3,7 +3,7 @@
         'name' => 'otmanekhrouf/gestion_facturation',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '6f14340ce587638f6ea06fd41613b7f3d4519702',
+        'reference' => '69a544557c6de3a9b64f50ea320a9e7361bff033',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -49,7 +49,7 @@
         'otmanekhrouf/gestion_facturation' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '6f14340ce587638f6ea06fd41613b7f3d4519702',
+            'reference' => '69a544557c6de3a9b64f50ea320a9e7361bff033',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
