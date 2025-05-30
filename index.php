@@ -5,11 +5,8 @@ if (!isset($_SESSION['user'])) {
     header("Location: connexion.php");
     exit;
 }
-$sql = "SELECT * FROM items";
-$stmt = $pdo->prepare($sql);
-$stmt->execute();
-$items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
+
+?>  
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -73,42 +70,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php foreach ($items as $item): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($item['ID']); ?></td>
-                        <td><?php echo htmlspecialchars($item['fornisseur']); ?></td>
-                        <td><?php echo htmlspecialchars($item['f_date']); ?></td>
-                        <td><?php echo htmlspecialchars($item['n_facture_f']); ?></td>
-                        <td><?php echo htmlspecialchars($item['article']); ?></td>
-                        <td><?php echo htmlspecialchars($item['Designation']); ?></td>
-                        <td><?php echo htmlspecialchars($item['quantite']); ?></td>
-                        <td><?php echo htmlspecialchars($item['Montant_uHT']); ?></td>
-                        <td><?php echo htmlspecialchars($item['Total_Uht']); ?></td>
-                        <td><?php echo htmlspecialchars($item['TVA']); ?></td>
-                        <td><?php echo htmlspecialchars($item['TOTAL_TTC']); ?></td>
-                        <td><?php echo htmlspecialchars($item['c_date']); ?></td>
-                        <td><?php echo htmlspecialchars($item['n_facture_c']); ?></td>
-                        <td><?php echo htmlspecialchars($item['n_devis']); ?></td>
-                        <td><?php echo htmlspecialchars($item['client']); ?></td>
-                        <td><?php echo htmlspecialchars($item['code_client']); ?></td>
-                        <td><?php echo htmlspecialchars($item['Mt_HT']); ?></td>
-                        <td><?php echo htmlspecialchars($item['Mt_TTC']); ?></td>
-                        <td><?php echo htmlspecialchars($item['Marge']); ?></td>
-                        <td><?php echo htmlspecialchars($item['Observation']); ?></td>
-                        <td class="action-buttons">
-                            <a href="voir_facture.php?id=<?php echo $item['ID']; ?>" class="btn btn-info btn-sm"
-                                title="Voir facture">
-                                <i class="fas fa-eye"></i> Voir facture
-                            </a>
-                            <a href="telecharger_pdf.php?id=<?php echo $item['ID']; ?>" class="btn btn-success btn-sm"
-                                title="Télécharger PDF" target="_blank">
-                                <i class="fas fa-download"></i> Télécharger PDF
-                            </a>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
+                
             </table>
         </div>
     </div>
