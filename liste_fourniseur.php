@@ -1,10 +1,27 @@
 <?php
-  include_once 'Database.php';
-  $sql = "SELECT ID,NameEntreprise,ICE,Adresse,Email,Contact,NumeroGSM,NumeroFixe,Activite FROM liste_fourniseur_client where role='Fournisseur' ";
-  $stmt = $pdo->prepare($sql);
-  $stmt->execute();
-  $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+include_once 'Database.php';
+
+$limite = 10;
+
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
+$offset = ($page - 1) * $limite;
+
+$countStmt = $pdo->query("SELECT COUNT(*) FROM liste_fourniseur_client WHERE role='Fournisseur'");
+$totalRecords = $countStmt->fetchColumn();
+$totalPages = ceil($totalRecords / $limite);
+
+$sql = "SELECT ID, NameEntreprise, ICE, Adresse, Email, Contact, NumeroGSM, NumeroFixe, Activite 
+        FROM liste_fourniseur_client 
+        WHERE role='Fournisseur'
+        LIMIT :limit OFFSET :offset";
+
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':limit', $limite, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -22,6 +39,7 @@
 <?php
        include './front/head_front.php';
      ?>
+<h1 class="text-center">Liste de Fourniseur</h1>
 <div class="d-flex justify-content-between align-items-center">
     <div class="container py-2">
         <a href="ajouter_fourniseur.php" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i>
@@ -114,6 +132,30 @@
         <?php endif; ?>
     </tbody>
 </table>
+<div class="d-flex justify-content-center my-3">
+    <nav>
+        <ul class="pagination">
+            <?php if ($page > 1): ?>
+            <li class="page-item">
+                <a class="page-link" href="?page=<?= $page - 1 ?>">Précédent</a>
+            </li>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="page-item <?= $i === $page ? 'active' : '' ?>">
+                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+            </li>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages): ?>
+            <li class="page-item">
+                <a class="page-link" href="?page=<?= $page + 1 ?>">Suivant</a>
+            </li>
+            <?php endif; ?>
+        </ul>
+    </nav>
+</div>
+
 <script src="recherche.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>

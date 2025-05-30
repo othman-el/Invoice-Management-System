@@ -16,13 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tva = 20;
     $date_creation = date('Y-m-d H:i:s');
 
-    $documentPath = null;
-    if (isset($_FILES['Document']) && $_FILES['Document']['error'] == UPLOAD_ERR_OK) {
-        $filename = basename($_FILES['Document']['name']);
-        $destination = 'uploads/' . time() . '_' . $filename;
-        move_uploaded_file($_FILES['Document']['tmp_name'], $destination);
-        $documentPath = $destination;
-    }
 
     $designations = $_POST['Designation'] ?? [];
     $quantities = $_POST['Quantite'] ?? [];
@@ -55,8 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->beginTransaction();
 
         $sqlFacture = "INSERT INTO factures 
-            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Document, Date_Creation)  
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation)  
+            VALUES (?, ?, ?, ?, ?, ?, ?)";
         
         $stmtFacture = $pdo->prepare($sqlFacture);
         $stmtFacture->execute([
@@ -66,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tva,
             $totalHT,
             $totalTTC,
-            $documentPath,
             $date_creation
         ]);
 
@@ -212,10 +204,9 @@ if (isset($_GET['show_invoices'])) {
                             <th>Numéro de facture</th>
                             <th>Désignation</th>
                             <th>Quantité</th>
-                            <th>Montant HT</th>
-                            <th>Document (PDF)</th>
+                            <th>Prix Unit</th>
                             <th>TVA (%)</th>
-                            <th>Actions</th>
+                            <th>Document</th>
                         </tr>
                     </thead>
                     <tbody id="invoice-table-body">
@@ -257,10 +248,6 @@ if (isset($_GET['show_invoices'])) {
                                 <input type="number" step="0.01" name="Montant_HT[]" required min="0"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
                                     placeholder="Montant" onchange="calculateTotal()">
-                            </td>
-                            <td>
-                                <input type="file" name="Document" accept=".pdf"
-                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
                             </td>
                             <td>
                                 <input type="number" name="TVA" value="20" readonly

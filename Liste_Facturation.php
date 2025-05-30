@@ -6,11 +6,19 @@ if (!isset($_SESSION['user'])) {
 }
 
 include_once 'Database.php';
-
+$facturesParPage = 10;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+$debut = ($page - 1) * $facturesParPage;
+$totalStmt = $pdo->query("SELECT COUNT(*) FROM factures");
+$totalFactures = $totalStmt->fetchColumn();
+$totalPages = ($totalFactures > 0) ? ceil($totalFactures / $facturesParPage) : 1;
 $stmt = $pdo->prepare("SELECT f.*, c.NameEntreprise, c.ICE, c.Adresse, c.Email, c.Contact, c.NumeroGSM, c.NumeroFixe, c.Activite 
                        FROM factures f 
                        JOIN liste_fourniseur_client c ON f.ClientID = c.ID 
-                       ORDER BY f.Date_Creation DESC");
+                       ORDER BY f.Date_Creation DESC
+                       LIMIT :debut, :limite");
+$stmt->bindValue(':debut', $debut, PDO::PARAM_INT);
+$stmt->bindValue(':limite', $facturesParPage, PDO::PARAM_INT);
 $stmt->execute();
 $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -33,7 +41,7 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <?php include './front/head_front.php'; ?>
 
-    <div class="container mt-4">
+    <div class="container ms-0 ps-0">
         <h1 class="text-center mb-4">Liste des factures</h1>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -80,9 +88,8 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Montant HT</th>
                     <th>TVA</th>
                     <th>Montant TTC</th>
-                    <th>Document</th>
                     <th>Date création</th>
-                    <th>Action</th>
+                    <th>Document</th>
                 </tr>
             </thead>
             <tbody>
@@ -101,20 +108,7 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <td><?= htmlspecialchars($facture['Montant_Total_HT']) ?> DH</td>
                     <td><?= htmlspecialchars($facture['TVA']) ?> %</td>
                     <td><?= htmlspecialchars($facture['Montant_Total_TTC']) ?>DH</td>
-                    <td>
-                        <?php
-                    $docPath = $facture['Document'];
-                    if (!empty($docPath) && file_exists($docPath)) {
-                        $filename = basename($docPath);
-                        $encodedFile = urlencode($filename);
-                        echo '<a href="download_document.php?file=' . $encodedFile . '" class="btn btn-sm btn-success me-1" title="Télécharger">Télécharger</a>';
-                        echo '<a href="view_document.php?file=' . $encodedFile . '" target="_blank" class="btn btn-sm btn-info" title="Voir">Voir</a>';
-                    } else {
-                        echo 'Aucun fichier';
-                    }
-                    ?>
-                    </td>
-                    <td><?= htmlspecialchars($facture['Date_Creation']) ?></td>
+                    <td><?= date('Y-m-d', strtotime($facture['Date_Creation'])) ?></td>
                     <td>
                         <div class="d-flex gap-2">
                             <a href="voir_facture.php?id=<?= $facture['ID'] ?>"
@@ -158,11 +152,34 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </button>
                             </a>
                     </td>
-
-                    <?php endforeach; ?>
+                </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
 
+        <?php if ($totalFactures > $facturesParPage): ?>
+        <nav aria-label="Pagination">
+            <ul class="pagination justify-content-center">
+                <?php if ($page > 1): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<?= $page - 1 ?>">Précédent</a>
+                </li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <li class="page-item <?= ($i === $page) ? 'active' : '' ?>">
+                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+                </li>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<?= $page + 1 ?>">Suivant</a>
+                </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+        <?php endif; ?>
 
     </div>
 

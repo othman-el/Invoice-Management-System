@@ -36,21 +36,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-
     <?php include './front/head_front.php'; ?>
 
-    <h2>Ajouter une charge fixe</h2>
-    <form method="post">
-        <label>Désignation: <input type="text" name="designation" required></label><br>
-        <label>Date Achat: <input type="date" name="date_achat" required></label><br>
-        <label>Mois: <input type="month" name="m" required></label><br>
-        <label>Total Out: <input type="number" step="0.001" name="total_out" required></label><br>
-        <label>Montant: <input type="number" step="0.001" name="montant" required></label><br>
-        <label>Code Réf: <input type="text" name="code_ref" required></label><br>
-        <label>Catégorie: <input type="text" name="categorie" required></label><br><br>
-        <input type="submit" value="Ajouter" class="btn btn-primary">
-    </form>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h2 class="text-center mb-4">Ajouter une charge fixe</h2>
+                <form method="post">
 
+                    <div class="mb-4 row align-items-center">
+                        <label for="designation" class="col-sm-4 col-form-label text-end">Désignation :</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                id="designation" name="designation" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 row align-items-center">
+                        <label for="date_achat" class="col-sm-4 col-form-label text-end">Date Achat :</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                id="date_achat" name="date_achat" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 row align-items-center">
+                        <label for="m" class="col-sm-4 col-form-label text-end">Mois :</label>
+                        <div class="col-sm-8">
+                            <input type="month" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                id="m" name="m" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 row align-items-center">
+                        <label for="total_out" class="col-sm-4 col-form-label text-end">Total Out :</label>
+                        <div class="col-sm-8">
+                            <input type="number" step="0.001"
+                                class="form-control rounded-pill bg-secondary bg-opacity-25 border-0" id="total_out"
+                                name="total_out" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 row align-items-center">
+                        <label for="montant" class="col-sm-4 col-form-label text-end">Montant :</label>
+                        <div class="col-sm-8">
+                            <input type="number" step="0.001"
+                                class="form-control rounded-pill bg-secondary bg-opacity-25 border-0" id="montant"
+                                name="montant" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 row align-items-center">
+                        <label for="code_ref" class="col-sm-4 col-form-label text-end">Code Réf :</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                id="code_ref" name="code_ref" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4 row align-items-center">
+                        <label for="categorie" class="col-sm-4 col-form-label text-end">Catégorie :</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                id="categorie" name="categorie" required>
+                        </div>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn rounded-pill px-5"
+                                style="background-color: #4f57c7; color: white;">Ajouter</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
+
 
 </html>
