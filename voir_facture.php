@@ -196,8 +196,10 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
 
     <!-- Facture -->
     <div class="container mt-5">
+        <img src="images/logo.png" alt="" width="150" height="150">
         <!-- En-tête -->
         <div class="row mb-4">
+
             <div class="col-6">
                 <h1 class="text-primary">ENRIQUE TECHNOLOGY</h1>
                 <p>Entrepôt n° 76, Résidence Chahbae D,<br>Av. Louis Van Beethoven, Tanger - Maroc</p>
