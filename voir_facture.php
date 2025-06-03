@@ -144,11 +144,25 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
         margin-top: 20px;
     }
 
+    @page {
+        margin: 0;
+        size: auto;
+    }
+
     @media print {
+
+        html,
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            font-size: 15px;
+        }
+
         .no-print {
             display: none !important;
         }
-
     }
     </style>
 </head>
@@ -196,6 +210,9 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
 
     <!-- Facture -->
     <div class="container mt-5">
+        <div>
+            <img src="images/logo.png" alt="Logo" style="max-width: 200px; max-height: 200px;">
+        </div>
         <!-- En-tête -->
         <div class="row mb-4">
             <div class="col-6">
