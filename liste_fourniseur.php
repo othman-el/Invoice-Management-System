@@ -10,7 +10,7 @@ $countStmt = $pdo->query("SELECT COUNT(*) FROM liste_fourniseur_client WHERE rol
 $totalRecords = $countStmt->fetchColumn();
 $totalPages = ceil($totalRecords / $limite);
 
-$sql = "SELECT ID, NameEntreprise, ICE, Adresse, Email, Contact, NumeroGSM, NumeroFixe, Activite 
+$sql = "SELECT *
         FROM liste_fourniseur_client 
         WHERE role='Fournisseur'
         LIMIT :limit OFFSET :offset";
@@ -87,7 +87,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php if (count($users) > 0): ?>
         <?php foreach ($users as $user): ?>
         <tr>
-            <td class=" text-center"><?= htmlspecialchars($user['ID']) ?></td>
+            <td class=" text-center"><?= htmlspecialchars($user['Code_de_reference']) ?></td>
             <td><?= htmlspecialchars($user['NameEntreprise']) ?></td>
             <td><?= htmlspecialchars($user['ICE']) ?></td>
             <td><?= htmlspecialchars($user['Adresse']) ?></td>
