@@ -15,7 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $N_facture = $_POST['N_facture'];
     $tva = 20;
     $date_creation = date('Y-m-d H:i:s');
-
+    $conditions = $_POST['Conditions'] ?? '';
+    $date_validite = $_POST['Datee'] ?? '';
+    $livraison = $_POST['livraison'] ?? '';
 
     $designations = $_POST['Designation'] ?? [];
     $quantities = $_POST['Quantite'] ?? [];
@@ -48,8 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->beginTransaction();
 
         $sqlFacture = "INSERT INTO factures 
-            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation)  
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation, Conditions, Datee, livraison)  
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $stmtFacture = $pdo->prepare($sqlFacture);
         $stmtFacture->execute([
@@ -59,7 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tva,
             $totalHT,
             $totalTTC,
-            $date_creation
+            $date_creation ,
+            $conditions,
+            $date_validite,
+            $livraison
         ]);
 
         $factureID = $pdo->lastInsertId();
@@ -219,6 +224,9 @@ if (isset($_GET['show_invoices'])) {
                             <th>Quantité</th>
                             <th>Prix Unit</th>
                             <th>TVA (%)</th>
+                            <th>Conditions de paiement</th>
+                            <th>Date de validité</th>
+                            <th>Délai de livraison</th>
                             <th>Ajouter autre Article</th>
                         </tr>
                     </thead>
@@ -266,6 +274,21 @@ if (isset($_GET['show_invoices'])) {
                                 <input type="number" name="TVA" value="20" readonly
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
                             </td>
+                            <td>
+                                <input type="text" name="Conditions" required
+                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                    placeholder="Conditions de paiement">
+                            </td>
+                            <td>
+                                <input type="date" name="Datee" required
+                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
+                            </td>
+                            <td>
+                                <input type="text" name="livraison" required
+                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                    placeholder="Délai de livraison">
+                            </td>
+
                             <td>
                                 <button type="button" class="add-row-btn" id="main-add-btn" onclick="addDetailRow()"
                                     title="Ajouter un article">+</button>
@@ -352,6 +375,9 @@ if (isset($_GET['show_invoices'])) {
                     class="form-control rounded-pill bg-light border-0"
                     placeholder="Montant" onchange="calculateTotal()">
             </td>
+            <td class="empty-cell"></td>
+            <td class="empty-cell"></td>
+            <td class="empty-cell"></td>
             <td class="empty-cell"></td>
             <td>
                 <button type="button" class="remove-row-btn" onclick="removeDetailRow(${detailRowCount})" 
