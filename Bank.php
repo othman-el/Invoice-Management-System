@@ -64,6 +64,11 @@ $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Total In</th>
                     <th>Observation</th>
                     <th>Code Ref</th>
+
+
+
+
+
                     <th>Cheque N</th>
                     <th>Reste Caisse</th>
                 </tr>

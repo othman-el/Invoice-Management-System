@@ -12,6 +12,8 @@ $limit = 10;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
+
+
 $totalStmt = $pdo->query("SELECT COUNT(*) FROM charge_fix");
 $totalRows = $totalStmt->fetchColumn();
 $totalPages = ceil($totalRows / $limit);
