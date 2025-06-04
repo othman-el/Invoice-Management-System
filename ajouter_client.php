@@ -32,35 +32,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = "<p style='color:orange;text-align:center;'>ICE de l'entreprise existe déjà.</p>";
     } elseif ($emailExists) {
         $message = "<p style='color:orange;text-align:center;'>Email existe déjà.</p>";
-    } 
-    elseif ($contactExists) {
+    } elseif ($contactExists) {
         $message = "<p style='color:orange;text-align:center;'>Contact existe déjà.</p>";
     } else {
-     $sql = "INSERT INTO liste_fourniseur_client 
-        (NameEntreprise, ICE, Adresse, Email, Contact, NumeroGSM, NumeroFixe, Activite, Role)
-        VALUES (:name, :ice, :adresse, :email, :contact, :numeroGSM, :numeroFix, :activite, :role)";
-
-$stmt = $pdo->prepare($sql);
+        $sql = "INSERT INTO liste_fourniseur_client 
+                (NameEntreprise, ICE, Adresse, Email, Contact, NumeroGSM, NumeroFixe, Activite, Role)
+                VALUES (:name, :ice, :adresse, :email, :contact, :numeroGSM, :numeroFix, :activite, :role)";
+        $stmt = $pdo->prepare($sql);
 
         try {
             $stmt->execute([
-           ':name' => $name,
-            ':ice' => $ice,
-            ':adresse' => $adresse,
-            ':email' => $email,
-            ':contact' => $contact,
-            ':numeroGSM' => $numeroGSM,
-            ':numeroFix' => $numeroFix,
-            ':activite' => $activite,
-            ':role' => $role
+                ':name' => $name,
+                ':ice' => $ice,
+                ':adresse' => $adresse,
+                ':email' => $email,
+                ':contact' => $contact,
+                ':numeroGSM' => $numeroGSM,
+                ':numeroFix' => $numeroFix,
+                ':activite' => $activite,
+                ':role' => $role
             ]);
-            $message = "<p style='color:green;text-align:center;'>Utilisateur ajouté avec succès !</p>";
+
+            $lastId = $pdo->lastInsertId();
+
+            $codeReference = str_pad($lastId, 3, '0', STR_PAD_LEFT);
+
+            $updateSql = "UPDATE liste_fourniseur_client SET Code_de_reference = :code WHERE ID = :id";
+            $updateStmt = $pdo->prepare($updateSql);
+            $updateStmt->execute([
+                ':code' => $codeReference,
+                ':id' => $lastId
+            ]);
+
+            $message = "<p style='color:green;text-align:center;'>Utilisateur ajouté avec succès ! Code de référence: <strong>$codeReference</strong></p>";
         } catch (PDOException $e) {
             $message = "<p style='color:red;text-align:center;'>Erreur lors de l'ajout : " . $e->getMessage() . "</p>";
         }
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -84,14 +95,14 @@ $stmt = $pdo->prepare($sql);
                         <label for="name" class="col-sm-4 col-form-label text-end">Nom de l'entrprise :</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                id="name" name="name" required >
+                                id="name" name="name" required>
                         </div>
                     </div>
                     <div class="mb-4 row align-items-center">
                         <label for="ice" class="col-sm-4 col-form-label text-end">ICE :</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                id="ice" name="ice" required >
+                                id="ice" name="ice" required>
                         </div>
                     </div>
 

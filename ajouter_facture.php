@@ -15,7 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $N_facture = $_POST['N_facture'];
     $tva = 20;
     $date_creation = date('Y-m-d H:i:s');
-
+    $conditions = $_POST['Conditions'] ?? '';
+    $date_validite = $_POST['Datee'] ?? '';
+    $livraison = $_POST['livraison'] ?? '';
 
     $designations = $_POST['Designation'] ?? [];
     $quantities = $_POST['Quantite'] ?? [];
@@ -48,8 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->beginTransaction();
 
         $sqlFacture = "INSERT INTO factures 
-            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation)  
-            VALUES (?, ?, ?, ?, ?, ?, ?)";
+            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation, Conditions, Datee, livraison)  
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         $stmtFacture = $pdo->prepare($sqlFacture);
         $stmtFacture->execute([
@@ -59,7 +61,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tva,
             $totalHT,
             $totalTTC,
-            $date_creation
+            $date_creation ,
+            $conditions,
+            $date_validite,
+            $livraison
         ]);
 
         $factureID = $pdo->lastInsertId();
@@ -88,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();       
     } catch (Exception $e) {
         $pdo->rollBack();
-        echo "<script>alert('Erreur lors de l’ajout de la facture : " . $e->getMessage() . "');</script>";
+        echo "<script>alert('Erreur lors de l'ajout de la facture : " . $e->getMessage() . "');</script>";
     }
 }
 
@@ -147,6 +152,12 @@ if (isset($_GET['show_invoices'])) {
         transition: all 0.3s;
     }
 
+    .add-row-btn:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
     .remove-row-btn {
         background-color: #dc3545;
         color: white;
@@ -158,7 +169,7 @@ if (isset($_GET['show_invoices'])) {
         transition: all 0.3s;
     }
 
-    .add-row-btn:hover {
+    .add-row-btn:hover:not(:disabled) {
         background-color: #218838;
     }
 
@@ -185,6 +196,13 @@ if (isset($_GET['show_invoices'])) {
     .table-responsive {
         overflow-x: auto;
     }
+
+    .max-rows-warning {
+        color: #dc3545;
+        font-size: 0.8em;
+        margin-top: 5px;
+        font-style: italic;
+    }
     </style>
 </head>
 
@@ -206,7 +224,10 @@ if (isset($_GET['show_invoices'])) {
                             <th>Quantité</th>
                             <th>Prix Unit</th>
                             <th>TVA (%)</th>
-                            <th>Document</th>
+                            <th>Conditions de paiement</th>
+                            <th>Date de validité</th>
+                            <th>Délai de livraison</th>
+                            <th>Ajouter autre Article</th>
                         </tr>
                     </thead>
                     <tbody id="invoice-table-body">
@@ -254,8 +275,26 @@ if (isset($_GET['show_invoices'])) {
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
                             </td>
                             <td>
-                                <button type="button" class="add-row-btn" onclick="addDetailRow()"
+                                <input type="text" name="Conditions" required
+                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                    placeholder="Conditions de paiement">
+                            </td>
+                            <td>
+                                <input type="date" name="Datee" required
+                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
+                            </td>
+                            <td>
+                                <input type="text" name="livraison" required
+                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                    placeholder="Délai de livraison">
+                            </td>
+
+                            <td>
+                                <button type="button" class="add-row-btn" id="main-add-btn" onclick="addDetailRow()"
                                     title="Ajouter un article">+</button>
+                                <div class="max-rows-warning" id="max-rows-warning" style="display: none;">
+                                    Maximum 5 articles supplémentaires
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -285,8 +324,29 @@ if (isset($_GET['show_invoices'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     let detailRowCount = 0;
+    const MAX_DETAIL_ROWS = 5;
+
+    function updateAddButtonState() {
+        const addButton = document.getElementById('main-add-btn');
+        const warningMessage = document.getElementById('max-rows-warning');
+
+        if (detailRowCount >= MAX_DETAIL_ROWS) {
+            addButton.disabled = true;
+            addButton.title = 'Maximum 5 articles supplémentaires atteint';
+            warningMessage.style.display = 'block';
+        } else {
+            addButton.disabled = false;
+            addButton.title = `Ajouter un article (${detailRowCount}/${MAX_DETAIL_ROWS})`;
+            warningMessage.style.display = 'none';
+        }
+    }
 
     function addDetailRow() {
+        if (detailRowCount >= MAX_DETAIL_ROWS) {
+            alert(`Vous ne pouvez ajouter que ${MAX_DETAIL_ROWS} articles supplémentaires maximum.`);
+            return;
+        }
+
         detailRowCount++;
         const tbody = document.getElementById('invoice-table-body');
 
@@ -296,7 +356,7 @@ if (isset($_GET['show_invoices'])) {
 
         newRow.innerHTML = `
             <td class="empty-cell">
-                <span class="detail-indicator">Article supplémentaire</span>
+                <span class="detail-indicator">Article ${detailRowCount + 1}</span>
             </td>
             <td class="empty-cell"></td>
             <td class="empty-cell"></td>
@@ -317,14 +377,16 @@ if (isset($_GET['show_invoices'])) {
             </td>
             <td class="empty-cell"></td>
             <td class="empty-cell"></td>
+            <td class="empty-cell"></td>
+            <td class="empty-cell"></td>
             <td>
                 <button type="button" class="remove-row-btn" onclick="removeDetailRow(${detailRowCount})" 
-                    title="Supprimer cet article">×
-                </button>
+                    title="Supprimer cet article">×</button>
             </td>
         `;
 
         tbody.appendChild(newRow);
+        updateAddButtonState();
         calculateTotal();
     }
 
@@ -332,8 +394,21 @@ if (isset($_GET['show_invoices'])) {
         const row = document.getElementById(`detail-row-${rowId}`);
         if (row) {
             row.remove();
+            detailRowCount--;
+            updateAddButtonState();
+            updateRowNumbers();
             calculateTotal();
         }
+    }
+
+    function updateRowNumbers() {
+        const detailRows = document.querySelectorAll('.detail-row');
+        detailRows.forEach((row, index) => {
+            const indicator = row.querySelector('.detail-indicator');
+            if (indicator) {
+                indicator.textContent = `Article ${index + 2}`;
+            }
+        });
     }
 
     function calculateTotal() {
@@ -358,6 +433,8 @@ if (isset($_GET['show_invoices'])) {
 
         if (mainQuantity) mainQuantity.addEventListener('input', calculateTotal);
         if (mainAmount) mainAmount.addEventListener('input', calculateTotal);
+
+        updateAddButtonState();
     });
 
     document.querySelector('form').addEventListener('submit', function(e) {
