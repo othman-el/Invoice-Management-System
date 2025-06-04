@@ -64,6 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':id' => $lastId
             ]);
 
+
+
+            
             $message = "<p style='color:green;text-align:center;'>Utilisateur ajouté avec succès ! Code de référence: <strong>$codeReference</strong></p>";
         } catch (PDOException $e) {
             $message = "<p style='color:red;text-align:center;'>Erreur lors de l'ajout : " . $e->getMessage() . "</p>";
@@ -75,6 +78,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="fr">
+
+
+
 
 <head>
     <meta charset="UTF-8">
