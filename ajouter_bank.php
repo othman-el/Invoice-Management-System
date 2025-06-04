@@ -89,6 +89,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
 
+
+
+
                     <div class="mb-4 row align-items-center">
                         <label for="cheque_n" class="col-sm-4 col-form-label text-end">Code banque :</label>
                         <div class="col-sm-8">
