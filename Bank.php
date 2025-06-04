@@ -54,7 +54,7 @@ $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <div class="table-responsive px-4 pb-5">
+    <div class="table-responsive ">
         <table class="table table-striped table-bordered">
             <thead class="bg-primary text-white text-center">
                 <tr>
