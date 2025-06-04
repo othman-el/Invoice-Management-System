@@ -3,7 +3,9 @@
         'name' => '__root__',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '6f14340ce587638f6ea06fd41613b7f3d4519702',
+
+        'reference' => 'ca5c09d7b1aba962cea3296c236c37348d90f060',
+
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -55,15 +57,7 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'otmanekhrouf/gestion_facturation' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '6f14340ce587638f6ea06fd41613b7f3d4519702',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../../',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
+        
         'sabberworm/php-css-parser' => array(
             'pretty_version' => 'v8.8.0',
             'version' => '8.8.0.0',

@@ -154,6 +154,11 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </td>
                 </tr>
                 <?php endforeach; ?>
+                <?php if (empty($factures)): ?>
+                <tr>
+                    <td colspan="15" class="text-center">Aucune facture trouvée.</td>
+                </tr>
+                <?php endif; ?>
             </tbody>
         </table>
 
