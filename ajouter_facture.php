@@ -83,6 +83,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $item['prix_unit'],
                 $item['montant_ht'],
                 $item['ordre']
+
+
+                
             ]);
         }
 
