@@ -66,68 +66,67 @@ $charges = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
-    <div class="container">
-        <table class="table table-striped table-bordered">
-            <thead class="bg-primary text-center">
-                <tr>
-                    <th class="text-white">ID</th>
-                    <th class="text-white">Désignation</th>
-                    <th class="text-white">Date Achat</th>
-                    <th class="text-white">Mois</th>
-                    <th class="text-white">Total Out</th>
-                    <th class="text-white">Montant</th>
-                    <th class="text-white">Code Réf</th>
-                    <th class="text-white">Catégorie</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (count($charges) > 0): ?>
-                <?php foreach ($charges as $charge): ?>
-                <tr>
-                    <td class="text-center"><?= htmlspecialchars($charge['ID']) ?></td>
-                    <td><?= htmlspecialchars($charge['DESIGNATION']) ?></td>
-                    <td><?= htmlspecialchars($charge['Date_Achat']) ?></td>
-                    <td><?= htmlspecialchars($charge['M']) ?></td>
-                    <td><?= htmlspecialchars($charge['TOTAL_OUT']) ?></td>
-                    <td><?= htmlspecialchars($charge['Montant']) ?></td>
-                    <td><?= htmlspecialchars($charge['Code_REF']) ?></td>
-                    <td><?= htmlspecialchars($charge['Categorie']) ?></td>
-                </tr>
-                <?php endforeach; ?>
-                <?php else: ?>
-                <tr>
-                    <td colspan="8" class="text-center">Aucune charge fixe trouvée.</td>
-                </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+    <table class="table table-striped table-bordered">
+        <thead class="bg-primary text-center">
+            <tr>
+                <th class="text-white">ID</th>
+                <th class="text-white">Désignation</th>
+                <th class="text-white">Date Achat</th>
+                <th class="text-white">Mois</th>
+                <th class="text-white">Total Out</th>
+                <th class="text-white">Montant</th>
+                <th class="text-white">Code Réf</th>
+                <th class="text-white">Catégorie</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (count($charges) > 0): ?>
+            <?php foreach ($charges as $charge): ?>
+            <tr>
+                <td class="text-center"><?= htmlspecialchars($charge['ID']) ?></td>
+                <td><?= htmlspecialchars($charge['DESIGNATION']) ?></td>
+                <td><?= htmlspecialchars($charge['Date_Achat']) ?></td>
+                <td><?= htmlspecialchars($charge['M']) ?></td>
+                <td><?= htmlspecialchars($charge['TOTAL_OUT']) ?></td>
+                <td><?= htmlspecialchars($charge['Montant']) ?></td>
+                <td><?= htmlspecialchars($charge['Code_REF']) ?></td>
+                <td><?= htmlspecialchars($charge['Categorie']) ?></td>
+            </tr>
+            <?php endforeach; ?>
+            <?php else: ?>
+            <tr>
+                <td colspan="8" class="text-center">Aucune charge fixe trouvée.</td>
+            </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
 
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <?php if ($page > 1): ?>
-                <li class="page-item">
-                    <a class="page-link" href="?page=<?= $page - 1 ?>" aria-label="Précédent">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <?php endif; ?>
 
-                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <li class="page-item <?= $i === $page ? 'active' : '' ?>">
-                    <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-                </li>
-                <?php endfor; ?>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <?php if ($page > 1): ?>
+            <li class="page-item">
+                <a class="page-link" href="?page=<?= $page - 1 ?>" aria-label="Précédent">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <?php endif; ?>
 
-                <?php if ($page < $totalPages): ?>
-                <li class="page-item">
-                    <a class="page-link" href="?page=<?= $page + 1 ?>" aria-label="Suivant">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-    </div>
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="page-item <?= $i === $page ? 'active' : '' ?>">
+                <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
+            </li>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages): ?>
+            <li class="page-item">
+                <a class="page-link" href="?page=<?= $page + 1 ?>" aria-label="Suivant">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <?php endif; ?>
+        </ul>
+    </nav>
     <script src="recherche_charge_fix.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
