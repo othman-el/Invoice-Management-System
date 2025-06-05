@@ -41,7 +41,7 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
 
 <head>
     <meta charset="UTF-8">
-    <title>FactureEEEEE #<?= htmlspecialchars($facture['N_facture']) ?></title>
+    <title>Facture #<?= htmlspecialchars($facture['N_facture']) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
     body {
