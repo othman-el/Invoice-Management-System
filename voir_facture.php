@@ -209,21 +209,15 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
     </div>
 
     <!-- Facture -->
-    <div class="container mt-5">
-        <div>
-            <img src="images/logo.png" alt="Logo" style="max-width: 200px; max-height: 200px;">
-        </div>
-        <!-- En-tête -->
-        <div class="row mb-4">
-
-            <div class="col-6">
-                <h1 class="text-primary">ENRIQUE TECHNOLOGY</h1>
-                <p>Entrepôt n° 76, Résidence Chahbae D,<br>Av. Louis Van Beethoven, Tanger - Maroc</p>
-                <p>ICE: 003574700000586</p>
-            </div>
-            <div class="col-6 text-end">
-                <h1 class="invoice-title">
-                    <?php
+    <div class="containe">
+        <div class="container mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <img src="images/logo.png" alt="Logo" style="max-width: 200px; max-height: 200px;">
+                </div>
+                <div class="text-end">
+                    <h1 class="invoice-title">
+                        <?php
                         if ($facture['type'] == 'bl') {
                             echo 'Bon de Livraison';
                         } elseif ($facture['type'] == 'facture') {
@@ -231,42 +225,54 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
                         } elseif ($facture['type'] == 'devis') {
                             echo 'Devis';
                         }
-                    ?>
-                </h1>
-
-                <p>N°: <?= htmlspecialchars($facture['N_facture']) ?>
-                </p>
-                <p>Date: <?= date('d/m/Y', strtotime($facture['Date_Creation'])) ?></p>
+                        ?>
+                    </h1>
+                    <p>N°: <?= htmlspecialchars($facture['N_facture']) ?></p>
+                    <p>Date: <?= date('d/m/Y', strtotime($facture['Date_Creation'])) ?></p>
+                </div>
             </div>
         </div>
 
-        <!-- Infos client -->
-        <div class="row mb-4">
-            <div class="col-6">
-                <h5 class="text-primary">Client</h5>
-                <p><strong><?= htmlspecialchars($facture['NameEntreprise']) ?></strong></p>
-                <p>Email: <?= htmlspecialchars($facture['Email']) ?></p>
-                <p>Adresse: <?= htmlspecialchars($facture['Adresse']) ?></p>
-                <p>Contact: <?= htmlspecialchars($facture['Contact']) ?></p>
-                <p>ICE: <?= htmlspecialchars($facture['ICE']) ?></p>
-            </div>
-            <div class="col-6">
-                <h5 class="text-primary">Informations</h5>
-                <p>TVA: <?= htmlspecialchars($facture['TVA']) ?>%</p>
+
+        <!-- En-tête -->
+        <div class="container mb-4">
+            <div class="d-flex justify-content-evenly align-items-center">
+                <div class="col-6">
+                    <h1 class="text-primary">Émetteur</h1>
+
+                    <strong>
+                        <h6>ENRIQUE TECHNOLOGY</h6>
+                    </strong>
+                    <p>Entrepôt n° 76, Résidence Chahbae D,<br>Av. Louis Van Beethoven, Tanger - Maroc</p>
+                    <p>ICE: 003574700000586</p>
+                </div>
+
+                <!-- Infos client -->
+                <div class="row mb-4 text-end">
+                    <div class="col-6">
+                        <h1 class="text-primary">Client</h1>
+                        <h6>
+                            <strong><?= htmlspecialchars($facture['NameEntreprise']) ?></strong>
+                        </h6>
+                        <p>Email: <?= htmlspecialchars($facture['Email']) ?></p>
+                        <p>Adresse: <?= htmlspecialchars($facture['Adresse']) ?></p>
+                        <p>Contact: <?= htmlspecialchars($facture['Contact']) ?></p>
+                        <p>ICE: <?= htmlspecialchars($facture['ICE']) ?></p>
+                    </div>
+                </div>
             </div>
         </div>
-
         <!-- Items -->
-        <div class="row">
+        <div class="row ">
             <div class="col-12">
-                <table class="table-bordered">
+                <table class="table-bordered ms-3">
                     <thead class="table-header">
                         <tr>
                             <th>#</th>
                             <th>Désignation</th>
                             <th>Quantité</th>
                             <th>Prix Unitaire</th>
-                            <th>Total </th>
+                            <th>Total HT</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -285,26 +291,56 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
         </div>
 
         <!-- Totaux -->
-        <div class="justify-content-end">
-            <div class="col-md-6">
-                <table class="table-bordered totals-table">
-                    <tr>
-                        <th>Sous-total HT</th>
-                        <td class="text-end"><?= number_format($facture['Montant_Total_HT'], 2) ?>DH</td>
-                    </tr>
-                    <tr>
-                        <th>TVA (<?= $facture['TVA'] ?>%)</th>
-                        <td class="text-end"><?= number_format($tva_amount, 2) ?>DH</td>
-                    </tr>
-                    <tr class="total-section">
-                        <th>Total TTC</th>
-                        <td class="text-end"><?= number_format($facture['Montant_Total_TTC'], 2) ?>DH</td>
-                    </tr>
-                </table>
+        <div class="d-flex justify-content-evenly">
+            <div style="min-width: 300px;">
+                <div class="col-md-12">
+                    <table class="table-bordered totals-table w-100">
+                        <tr class="text-end total-section">
+                            <td>Base</td>
+                            <td>Taux</td>
+                            <td>Taxe</td>
+                        </tr>
+                        <tr>
+                            <td class="text-end"><?= number_format($facture['Montant_Total_HT'], 2) ?> DH</td>
+                            <td class="text-end"><?= $facture['TVA'] ?> %</td>
+                            <td class="text-end"><?= number_format($tva_amount, 2) ?> DH</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div style="min-width: 300px;">
+                <div class="col-md-12">
+                    <table class="table-bordered totals-table w-100">
+                        <tr class="text-end total-section">
+                            <td>NET A PAYER</td>
+                        </tr>
+                        <tr>
+                            <td class="text-end"><?= number_format($total_ttc, 2) ?> DH</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <p class="ms-4 text-primary">
+            Conditions de paiement : <?= htmlspecialchars($facture['Conditions']) ?>
+        </p>
+        <p class="ms-4 text-primary">
+            Date de validité : <?= htmlspecialchars($facture['Datee']) ?>
+        </p>
+        <p class="ms-4 text-primary">
+            Délai de livraison : <?= htmlspecialchars($facture['livraison']) ?>
+        </p><br>
+        <p class=" ms-4">
+            Nous sommes à votre disposition pour tout complément d'informations.
+        </p>
+        <p class=" ms-4">
+            Nous vous prions d'agréer, Cher Client, nos sincères salutations.
+        </p>
+    </div><br>
+    <footer>
+        <img src="images/unnamed" alt="Footer Image">
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
