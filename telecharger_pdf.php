@@ -159,6 +159,7 @@ try {
 <body>
     <!-- En-tête -->
     <div class="row">
+        
         <div class="col-6">
             <h1 class="text-primary">ENRIQUE TECHNOLOGY</h1>
             <p>Entrepôt n° 76, Résidence Chahbae D,<br>Av. Louis Van Beethoven, Tanger - Maroc</p>

@@ -41,11 +41,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <h2 class="text-center mb-4">Ajouter une charge fixe</h2>
+                <h2 class="text-center mb-4">Ajouter une charge fixe </h2>
                 <form method="post">
 
                     <div class="mb-4 row align-items-center">
-                        <label for="designation" class="col-sm-4 col-form-label text-end">Désignation :</label>
+                        <label for="designation" class="col-sm-4 col-form-label text-end">Désignation : </label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
                                 id="designation" name="designation" required>

@@ -1,13 +1,5 @@
 {
-    "name": "otmanekhrouf/gestion_facturation",
-    "autoload": {
-        "psr-4": {
-            "Otmanekhrouf\\GestionFacturation\\": "src/"
-        }
-    },
     "require": {
-        "setasign/fpdf": "^1.8",
-        "setasign/fpdi": "^2.6",
         "dompdf/dompdf": "^3.1"
     }
 }

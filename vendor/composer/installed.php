@@ -1,15 +1,26 @@
 <?php return array(
     'root' => array(
-        'name' => 'otmanekhrouf/gestion_facturation',
+        'name' => '__root__',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '69a544557c6de3a9b64f50ea320a9e7361bff033',
+
+        'reference' => 'ca5c09d7b1aba962cea3296c236c37348d90f060',
+
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'ca5c09d7b1aba962cea3296c236c37348d90f060',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'dompdf/dompdf' => array(
             'pretty_version' => 'v3.1.0',
             'version' => '3.1.0.0',
@@ -46,39 +57,13 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        'otmanekhrouf/gestion_facturation' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '69a544557c6de3a9b64f50ea320a9e7361bff033',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../../',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
+        
         'sabberworm/php-css-parser' => array(
             'pretty_version' => 'v8.8.0',
             'version' => '8.8.0.0',
             'reference' => '3de493bdddfd1f051249af725c7e0d2c38fed740',
             'type' => 'library',
             'install_path' => __DIR__ . '/../sabberworm/php-css-parser',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'setasign/fpdf' => array(
-            'pretty_version' => '1.8.6',
-            'version' => '1.8.6.0',
-            'reference' => '0838e0ee4925716fcbbc50ad9e1799b5edfae0a0',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../setasign/fpdf',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
-        'setasign/fpdi' => array(
-            'pretty_version' => 'v2.6.3',
-            'version' => '2.6.3.0',
-            'reference' => '67c31f5e50c93c20579ca9e23035d8c540b51941',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../setasign/fpdi',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
