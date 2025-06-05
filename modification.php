@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
-    <title>Modification des informations</title>
+    <title>Modification des informationsSSSSSSSSSSSSSS</title>
 </head>
 
 <body>
@@ -130,9 +130,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="col-sm-8">
                             <select name="role" id="role" required
                                 class="form-select rounded-pill bg-secondary bg-opacity-25 border-0">
-                                <option value="" disabled selected  >-- Sélectionner un rôle --</option>
-                                <option value="Fournisseur"  >Fournisseur</option>
-                                <option value="Client" >Client</option>
+                                <option value="" disabled selected>-- Sélectionner un rôle --</option>
+                                <option value="Fournisseur">Fournisseur</option>
+                                <option value="Client">Client</option>
                             </select>
                         </div>
                     </div>

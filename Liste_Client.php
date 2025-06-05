@@ -29,7 +29,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet"
         type="text/css">
-    <title>Liste Client</title>
+    <title>Liste ClientTTTTTTTTTT</title>
 </head>
 
 <body>

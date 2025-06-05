@@ -26,7 +26,7 @@ $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <?php include './front/head_front.php'; ?>
 
-    <h1 class="text-center mt-4">Liste des Banks</h1>
+    <h1 class="text-center mt-4">Liste des BanksSSSSSSSSSSSS</h1>
 
     <div class="d-flex justify-content-between align-items-center my-3 px-4">
         <div>
@@ -64,11 +64,6 @@ $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Total In</th>
                     <th>Observation</th>
                     <th>Code Ref</th>
-
-
-
-
-
                     <th>Cheque N</th>
                     <th>Reste Caisse</th>
                 </tr>
