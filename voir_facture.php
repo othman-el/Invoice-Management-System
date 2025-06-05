@@ -272,7 +272,7 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
                             <th>Désignation</th>
                             <th>Quantité</th>
                             <th>Prix Unitaire</th>
-                            <th>Total HT</th>
+                            <th>Total </th>
                         </tr>
                     </thead>
                     <tbody>
