@@ -33,8 +33,12 @@ $charges = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liste des Charges Fixes</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet"
+        type="text/css">
 </head>
 
 <body>
@@ -42,7 +46,7 @@ $charges = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <h1 class="text-center my-4">Liste des Charges Fixes</h1>
     <div class="d-flex justify-content-between align-items-center ms-5">
         <div class="container py-2">
-            <a href="ajouter_charge_fix.php" class="btn btn-primary">
+            <a href="ajouter_charge_fix.php" class="btne">
                 <i class="fa-solid fa-plus"></i> Ajouter Charge Fixe
             </a>
 
@@ -51,14 +55,8 @@ $charges = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="position-relative">
                 <input type="text" id="searchInput"
                     placeholder="Rechercher par ID, Désignation, Date, Mois, Code Réf ou Catégorie"
-                    class="form-control ps-5 rounded-pill border-0 shadow-sm text-white bg-primary" />
+                    class="form-control ps-5 rounded-pill border-0 shadow-sm text-white" />
 
-                <style>
-                #searchInput::placeholder {
-                    color: white;
-                    opacity: 1;
-                }
-                </style>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 50 50"
                     class="position-absolute top-50 start-0 translate-middle-y ms-3">
                     <path
@@ -69,7 +67,7 @@ $charges = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
     <table class="table table-striped table-bordered">
-        <thead class="bg-primary text-center">
+        <thead class=" text-center">
             <tr>
                 <th class="text-white">ID</th>
                 <th class="text-white">Désignation</th>

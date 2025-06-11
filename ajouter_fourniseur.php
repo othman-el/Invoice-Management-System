@@ -82,10 +82,7 @@ $stmt = $pdo->prepare($sql);
 </head>
 
 <body>
-    <?php
-   include 'index.php';
-  
-  ?>
+    <?php include './front/head_front.php'; ?>
 
     <body>
         <div class="container py-5">

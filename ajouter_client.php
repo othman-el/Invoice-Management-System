@@ -92,10 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <?php
-   include 'index.php';
-  
-  ?>
+    <?php include './front/head_front.php'; ?>
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8">

@@ -29,6 +29,8 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Liste des Factures</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style/style.css">
     <style>
     table th,
     table td {
@@ -40,12 +42,12 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
     <?php include './front/head_front.php'; ?>
+    <h1 class="text-center mb-4 my-4">Liste des factures</h1>
 
     <div class="container ms-0 ps-0">
-        <h1 class="text-center mb-4">Liste des factures</h1>
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <a href="ajouter_facture.php" class="btn btn-primary btn-sm d-flex align-items-center gap-2 ms-2">
+            <a href="ajouter_facture.php" class="btne  btn-sm d-flex align-items-center gap-2 ms-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path
                         d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM8.5 7v1.5H10a.5.5 0 0 1 0 1H8.5V11a.5.5 0 0 1-1 0V9.5H6a.5.5 0 0 1 0-1h1.5V7a.5.5 0 0 1 1 0z" />
@@ -54,14 +56,8 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </a>
             <div style="max-width: 400px;">
                 <div class="position-relative">
-                    <input type="text" id="searchInput" placeholder="Rechercher par ID ou Nom"
-                        class="form-control ps-5 rounded-pill border-0 shadow-sm text-white bg-primary" />
-                    <style>
-                    #searchInput::placeholder {
-                        color: white;
-                        opacity: 1;
-                    }
-                    </style>
+                    <input type="text" id="searchInput" placeholder="Rechercher par Client Nº ou Nom d'entreprise"
+                        class="form-control ps-5 rounded-pill border-0 shadow-sm text-white" />
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 50 50"
                         class="position-absolute top-50 start-0 translate-middle-y ms-3">
                         <path
@@ -74,23 +70,23 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <table class="table table-striped table-bordered text-center align-middle">
-            <thead class="bg-primary text-white">
+            <thead class="text-white ">
                 <tr>
-                    <th>Client Nº</th>
-                    <th>Nom de l'entreprise</th>
-                    <th>ICE</th>
-                    <th>Adresse</th>
-                    <th>Email</th>
-                    <th>Contact</th>
-                    <th>GSM</th>
-                    <th>Fixe</th>
-                    <th>Activité</th>
-                    <th>Type</th>
-                    <th>Montant HT</th>
-                    <th>TVA</th>
-                    <th>Montant TTC</th>
-                    <th>Date création</th>
-                    <th>Document</th>
+                    <th class="text-white ">Client Nº</th>
+                    <th class="text-white ">Nom de l'entreprise</th>
+                    <th class="text-white ">ICE</th>
+                    <th class="text-white ">Adresse</th>
+                    <th class="text-white ">Email</th>
+                    <th class="text-white ">Contact</th>
+                    <th class="text-white ">GSM</th>
+                    <th class="text-white ">Fixe</th>
+                    <th class="text-white ">Activité</th>
+                    <th class="text-white ">Type</th>
+                    <th class="text-white ">Montant HT</th>
+                    <th class="text-white ">TVA</th>
+                    <th class="text-white ">Montant TTC</th>
+                    <th class="text-white ">Date création</th>
+                    <th class="text-white ">Document</th>
                 </tr>
             </thead>
             <tbody>
@@ -189,7 +185,7 @@ $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     </div>
 
-    <script src="recherche.js"></script>
+    <script src="facture.js"></script>
 </body>
 
 </html>

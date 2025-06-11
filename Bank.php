@@ -21,29 +21,26 @@ $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet"
         type="text/css">
+    <link rel="stylesheet" href="style/style.css">
+
 </head>
 
 <body>
     <?php include './front/head_front.php'; ?>
 
-    <h1 class="text-center mt-4">Liste des Banks</h1>
+    <h1 class="text-center mb-4 my-4 ">Liste des Banks</h1>
 
     <div class="d-flex justify-content-between align-items-center my-3 px-4">
         <div>
-            <a href="ajouter_bank.php" class="btn btn-primary">
+            <a href="ajouter_bank.php" class="btne">
                 <i class="fa-solid fa-plus"></i> Ajouter un Bank
             </a>
         </div>
         <div style="max-width: 400px;">
             <div class="position-relative">
                 <input type="text" id="searchInput" placeholder="Rechercher par code ou observation"
-                    class="form-control ps-5 rounded-pill border-0 shadow-sm text-white bg-primary" />
-                <style>
-                #searchInput::placeholder {
-                    color: white;
-                    opacity: 1;
-                }
-                </style>
+                    class="form-control ps-5 rounded-pill border-0 shadow-sm text-white" />
+
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 50 50"
                     class="position-absolute top-50 start-0 translate-middle-y ms-3">
                     <path
@@ -56,16 +53,16 @@ $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="table-responsive ">
         <table class="table table-striped table-bordered">
-            <thead class="bg-primary text-white text-center">
+            <thead class=" text-white text-center">
                 <tr>
-                    <th>ID</th>
-                    <th>Date</th>
-                    <th>Code Achat</th>
-                    <th>Total In</th>
-                    <th>Observation</th>
-                    <th>Code Ref</th>
-                    <th>Cheque N</th>
-                    <th>Reste Caisse</th>
+                    <th class="text-white ">ID</th>
+                    <th class="text-white ">Date</th>
+                    <th class="text-white ">Code Achat</th>
+                    <th class="text-white ">Total In</th>
+                    <th class="text-white ">Observation</th>
+                    <th class="text-white ">Code Ref</th>
+                    <th class="text-white ">Cheque N</th>
+                    <th class="text-white ">Reste Caisse</th>
                 </tr>
             </thead>
             <tbody id="bankTable">

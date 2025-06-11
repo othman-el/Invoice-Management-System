@@ -25,8 +25,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" rel="stylesheet"
         type="text/css">
     <title>Liste Client</title>
@@ -36,23 +38,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php
        include './front/head_front.php';
      ?>
-    <h1 class="text-center">Liste de Client</h1>
+    <h1 class="text-center mb-4 my-4">Liste de Client</h1>
     <div class="d-flex justify-content-between align-items-center">
         <div class="container py-2">
-            <a href="ajouter_client.php" class="btn btn-primary"><i class="fa-solid fa-user-plus"></i>
+            <a href="ajouter_client.php" class="btne "><i class="fa-solid fa-user-plus"></i>
                 Ajouter Client</a>
         </div>
         <div class="container py-2" style="max-width: 400px;">
             <div class="position-relative">
-                <input type="text" id="searchInput" placeholder="Rechercher par ID ou Nom"
-                    class="form-control ps-5 rounded-pill border-0 shadow-sm text-white bg-primary" />
-
-                <style>
-                #searchInput::placeholder {
-                    color: white;
-                    opacity: 1;
-                }
-                </style>
+                <input type="text" id="searchInput" placeholder="Rechercher par Code de référence ou Nom"
+                    class="form-control ps-5 rounded-pill border-0 shadow-sm text-white" />
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white" viewBox="0 0 50 50"
                     class="position-absolute top-50 start-0 translate-middle-y ms-3">
                     <path
@@ -61,9 +56,10 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </svg>
             </div>
         </div>
+
     </div>
     <table class="table table-striped table-bordered" id="dataTable">
-        <thead class="bg-primary text-center">
+        <thead class=" text-center">
             <tr>
                 <th class="text-white">C N°</th>
                 <th class="text-white">Nom de l'entreprise </th>
