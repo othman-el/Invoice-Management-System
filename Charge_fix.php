@@ -43,7 +43,7 @@ $charges = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
     <?php include './front/head_front.php'; ?>
-    <h1 class="text-center my-4">Liste des Charges Fixes</h1>
+    <h2 class="text-center my-4">Liste des Charges Fixes</h2>
     <div class="d-flex justify-content-between align-items-center ms-5">
         <div class="container py-2">
             <a href="ajouter_charge_fix.php" class="btne">

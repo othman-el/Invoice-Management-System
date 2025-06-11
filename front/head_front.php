@@ -12,8 +12,19 @@
     --main-bg: #f3f3f3;
 }
 
+.header {
+    background-color: #ffffff;
+    color: #22a8c1;
+    padding: 2rem;
+}
+
+h1,
+h2 {
+    color: #22a8c1;
+}
+
 .sidebar {
-    background-color: var(--sidebar-bg);
+    background-color: #009fbc;
     min-height: 100vh;
     width: 250px;
     position: fixed;
@@ -81,7 +92,7 @@
 }
 
 .sidebar .nav-link:hover {
-    background-color: rgba(99, 99, 216, 0.3);
+    background-color: #37B7C3;
     color: white;
 }
 
@@ -114,7 +125,7 @@
     top: 9rem;
     left: 1rem;
     z-index: 1001;
-    background-color: var(--sidebar-bg);
+    background-color: #009fbc;
     border: none;
     border-radius: 8px;
     padding: 12px;
@@ -123,7 +134,7 @@
 }
 
 .burger-menu:hover {
-    background-color: var(--card-bg);
+    background-color: #37B7C3;
     transform: scale(1.05);
 }
 
@@ -175,7 +186,7 @@
             <img src="images/logo.png" alt="logo" width="130px" height="130px">
         </div>
         <div class="flex-grow-1 text-center">
-            <h1 class="h2 mb-0 fw-light">Gestion des facturation</h1>
+            <h1>Gestion des facturation</h1>
         </div>
         <div style="width:130px;"></div>
     </div>

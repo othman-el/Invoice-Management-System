@@ -47,7 +47,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <?php include './front/head_front.php'; ?>
 
-    <h1 class="text-center mb-4 my-4">Liste des Items</h1>
+    <h2 class="text-center mb-4 my-4">Liste des Items</h2>
 
     <div class="d-flex justify-content-between align-items-center">
         <div class="container py-2">

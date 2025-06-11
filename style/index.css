@@ -1,67 +1,11 @@
-   thead {
-        background-color: #009fbc;
-    }
-
-
-
-    .btne {
-        background-color: #009fbc;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        text-decoration: none;
-    }
-
-    #searchInput {
-        background-color: #009fbc;
-        color: white;
-        border: none;
-        padding: 10px 20px 10px 45px;
-        border-radius: 50px;
-        width: 100%;
-        transition: all 0.3s ease;
-    }
-
-    #searchInput:focus {
-        background-color: #37B7C3;
-        color: white;
-        outline: none;
-        box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-    }
-
-    #searchInput::placeholder {
-        color: white;
-    }
-
-    .search-icon {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: white;
-    }
-
-    .btne:hover {
-        background-color: #37B7C3;
-        color: white;
-    }
-
-
-     .active>.page-link,
-    .page-link.active {
-        z-index: 3;
-        color: var(--bs-pagination-active-color);
-        background-color: #009fbc;
-        border-color: #009fbc;
-    }
-   .re {
-        margin-bottom: 20px;
-    }
-    :root {
+ :root {
         --sidebar-bg: #532C97;
         --card-bg: #6363d8;
         --main-bg: #f3f3f3;
+    }
+
+    h1 {
+        color: #009fbc;
     }
 
     body {
@@ -70,7 +14,7 @@
     }
 
     .sidebar {
-        background-color: var(--sidebar-bg);
+        background-color: #009fbc;
         min-height: 100vh;
         width: 250px;
         position: fixed;
@@ -107,7 +51,7 @@
     }
 
     .sidebar .nav-link:hover {
-        background-color: rgba(99, 99, 216, 0.3);
+        background-color: #37B7C3;
         color: white;
     }
 
@@ -133,8 +77,8 @@
     }
 
     .header {
-        background-color: var(--card-bg);
-        color: white;
+        background-color: #ffffff;
+        color: #009fbc;
         padding: 2rem;
     }
 
@@ -165,7 +109,7 @@
     }
 
     .stats-card {
-        background-color: var(--card-bg);
+        background-color: #009fbc;
         color: white;
         border: none;
         border-radius: 12px;
@@ -205,6 +149,4 @@
         .sidebar.show {
             transform: translateX(0);
         }
-
- 
     }

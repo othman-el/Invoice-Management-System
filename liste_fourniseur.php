@@ -40,7 +40,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php
        include './front/head_front.php';
      ?>
-<h1 class="text-center my-4">Liste de Fourniseur</h1>
+<h2 class="text-center my-4">Liste de Fourniseur</h2>
 <div class="d-flex justify-content-between align-items-center">
     <div class="container py-2">
         <a href="ajouter_fourniseur.php" class="btne"><i class="fa-solid fa-user-plus"></i>

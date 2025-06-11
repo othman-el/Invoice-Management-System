@@ -28,7 +28,7 @@ $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <?php include './front/head_front.php'; ?>
 
-    <h1 class="text-center mb-4 my-4 ">Liste des Banks</h1>
+    <h2 class="text-center mb-4 my-4 ">Liste des banques</h2>
 
     <div class="d-flex justify-content-between align-items-center my-3 px-4">
         <div>

@@ -38,7 +38,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php
        include './front/head_front.php';
      ?>
-    <h1 class="text-center mb-4 my-4">Liste de Client</h1>
+    <h2 class="text-center mb-4 my-4">Liste de Client</h2>
     <div class="d-flex justify-content-between align-items-center">
         <div class="container py-2">
             <a href="ajouter_client.php" class="btne "><i class="fa-solid fa-user-plus"></i>
