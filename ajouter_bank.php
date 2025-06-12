@@ -2,15 +2,17 @@
 include_once 'Database.php';
 session_start();
 
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['user']) || !isset($_SESSION['user']['id'])) {
     header("Location: connexion.php");
     exit;
 }
 
+$user_id = $_SESSION['user']['id'];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sql = "INSERT INTO bank (date, Code_achat, TOTAL_IN, Observation, Code_ref, Cheque_N, Reste_Caisse)
-            VALUES (:date, :Code_achat, :TOTAL_IN, :Observation, :Code_ref, :Cheque_N, :Reste_Caisse)";
-    
+    $sql = "INSERT INTO bank (date, Code_achat, TOTAL_IN, Observation, Code_ref, Cheque_N, Reste_Caisse, user_id)
+        VALUES (:date, :Code_achat, :TOTAL_IN, :Observation, :Code_ref, :Cheque_N, :Reste_Caisse, :user_id)";
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         ':date' => $_POST['date'],
@@ -19,14 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':Observation' => $_POST['Observation'],
         ':Code_ref' => $_POST['Code_ref'],
         ':Cheque_N' => $_POST['Cheque_N'],
-        ':Reste_Caisse' => $_POST['Reste_Caisse']
+        ':Reste_Caisse' => $_POST['Reste_Caisse'],
+        ':user_id' => $user_id
     ]);
 
-    header("Location: " . $_SERVER['PHP_SELF'] . "?success=1");
-    exit;
-}
+  header("Location: Bank.php");
+exit;
 
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -121,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="row mt-5">
                         <div class="col-12 text-center">
                             <button type="submit" class="btn rounded-pill px-5"
-                                style="background-color: #4f57c7; color: white;">Ajouter</button>
+                                style="background-color: #009fbc; color: white;">Ajouter</button>
                         </div>
                     </div>
                 </form>

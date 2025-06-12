@@ -1,18 +1,26 @@
 <?php
 include 'Database.php';
+session_start();
 
-$stmt = $pdo->prepare("SELECT count(*) FROM liste_fourniseur_client WHERE Role = 'Client'");
-$stmt->execute();
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+$user_id = $_SESSION['user']['id'];
+
+$stmt = $pdo->prepare("SELECT count(*) FROM liste_fourniseur_client WHERE Role = 'Client' AND user_id = :user_id");
+$stmt->execute([':user_id' => $user_id]);
 $count = $stmt->fetchColumn();
 
-$stmtf = $pdo->prepare("SELECT count(*) FROM liste_fourniseur_client WHERE Role = 'Fournisseur'");
-$stmtf->execute();
+$stmtf = $pdo->prepare("SELECT count(*) FROM liste_fourniseur_client WHERE Role = 'Fournisseur' AND user_id = :user_id");
+$stmtf->execute([':user_id' => $user_id]);
 $countf = $stmtf->fetchColumn();
 
-$stmtfr = $pdo->prepare("SELECT count(*) FROM factures");
-$stmtfr->execute();
+$stmtfr = $pdo->prepare("SELECT count(*) FROM factures WHERE user_id = :user_id");
+$stmtfr->execute([':user_id' => $user_id]);
 $countfr = $stmtfr->fetchColumn();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -31,8 +39,12 @@ $countfr = $stmtfr->fetchColumn();
     <div class="sidebar">
         <!-- User Profile -->
         <div class="user-profile">
-            <h5 class="text-white mb-1">Nom et prénom</h5>
-            <p class="text-white-50 small mb-0">Email</p>
+            <span class="text-white">
+                <br> <?php echo $_SESSION['user']['fname']?> <?php echo $_SESSION['user']['lname']?>
+            </span><br>
+            <span>
+                <p class="text-white-50 small mb-0"> <?php echo $_SESSION['user']['email']?></p>
+            </span>
         </div>
 
         <!-- Navigation -->
@@ -91,7 +103,7 @@ $countfr = $stmtfr->fetchColumn();
                     <img src="images/logo.png" alt="logo" width="130px" height="130px" class="ms-5">
                 </div>
                 <div class="flex-grow-1 text-center">
-                    <h1 class="h2 mb-0 fw-light">Gestion des facturation</h1>
+                    <h1>Gestion des facturation</h1>
                 </div>
                 <div style="width:130px;"></div>
             </div>
@@ -102,7 +114,16 @@ $countfr = $stmtfr->fetchColumn();
         <main class="dashboard-content">
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
-                    <div class="card stats-card">
+                    <div class="card stats-card position-relative overflow-hidden" style="min-height: 150px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="position-absolute" style="width: 120px; height: 120px; right: 10px; bottom: 10px; opacity: 0.1; color:
+                            #rgb(254,254,254) ;">
+                            <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 
+                 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 
+                 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 
+                 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 
+                 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                        </svg>
+
                         <div class="card-body p-0">
                             <h3>Les clients :</h3>
                             <div class="number">
@@ -110,9 +131,18 @@ $countfr = $stmtfr->fetchColumn();
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <div class="col-lg-4 col-md-6">
-                    <div class="card stats-card">
+                    <div class="card stats-card position-relative overflow-hidden" style="min-height: 150px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="position-absolute"
+                            style="width: 120px; height: 120px; right: 10px; bottom: 10px; opacity: 0.1; color: #000;">
+                            <path d="M20 8h-3V4H3v16h2a3 3 0 1 0 6 0h2a3 3 0 1 0 6 0h3v-6l-4-6zm-5 10a1 1 0 1 1-2 
+                     0 1 1 0 0 1 2 0zm-8 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7-4H5V6h10v8zm2 
+                     0V9.5l2.5 3.5H16z" />
+                        </svg>
+
                         <div class="card-body p-0">
                             <h3>Les fournisseurs :</h3>
                             <div class="number">
@@ -121,8 +151,16 @@ $countfr = $stmtfr->fetchColumn();
                         </div>
                     </div>
                 </div>
+
                 <div class="col-lg-4 col-md-6">
-                    <div class="card stats-card">
+                    <div class="card stats-card position-relative overflow-hidden" style="min-height: 150px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="position-absolute"
+                            style="width: 120px; height: 120px; right: 10px; bottom: 10px; opacity: 0.1; color: #000;">
+                            <path
+                                d="M21 2H7c-1.1 0-2 .9-2 2v18l4-4 4 4 4-4 4 4V4c0-1.1-.9-2-2-2zm-4 10H9v-2h8v2zm0-4H9V6h8v2z" />
+                        </svg>
+
                         <div class="card-body p-0">
                             <h3>Les factures :</h3>
                             <div class="number">
@@ -131,6 +169,7 @@ $countfr = $stmtfr->fetchColumn();
                         </div>
                     </div>
                 </div>
+
             </div>
         </main>
     </div>

@@ -1,6 +1,7 @@
 <?php
+include_once 'Database.php';
 session_start();
-require_once 'Database.php';
+
 
 $errors = [];
 $success_message = "";
@@ -13,17 +14,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user'] = [
-            'id' => $user['id'],
-            'fname' => $user['fname'],
-            'lname' => $user['lname'],
-            'email' => $user['email']
-        ];
-        $success_message = "Welcome, " . $user['fname'] . " " . $user['lname'] . "!";
-
-        header("Location: index.php");
-    } else {
+ if ($user && password_verify($password, $user['password'])) {
+    $_SESSION['user'] = [
+        'id' => $user['id'],
+        'fname' => $user['fname'],
+        'lname' => $user['lname'],
+        'email' => $user['email']
+    ];
+    header("Location: index.php");
+    exit;
+}
+else {
         $errors[] = "Wrong email or password.";
     }
 }

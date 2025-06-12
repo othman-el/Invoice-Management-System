@@ -322,6 +322,9 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
             </div>
         </div>
         <p class="ms-4 text-primary">
+            Conditions de paiement : <?= htmlspecialchars($facture['condition_re']) ?>
+        </p>
+        <p class="ms-4 text-primary">
             Conditions de paiement : <?= htmlspecialchars($facture['Conditions']) ?>
         </p>
         <p class="ms-4 text-primary">

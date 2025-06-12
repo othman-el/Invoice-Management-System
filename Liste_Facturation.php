@@ -1,27 +1,40 @@
 <?php
+include_once 'Database.php';
+
 session_start();
+
 if (!isset($_SESSION['user'])) {
     header("Location: connexion.php");
     exit;
 }
+$user_id = $_SESSION['user']['id'];
 
-include_once 'Database.php';
 $facturesParPage = 10;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $debut = ($page - 1) * $facturesParPage;
-$totalStmt = $pdo->query("SELECT COUNT(*) FROM factures");
+
+$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM factures WHERE user_id = :user_id");
+$totalStmt->execute([':user_id' => $user_id]);
 $totalFactures = $totalStmt->fetchColumn();
+
 $totalPages = ($totalFactures > 0) ? ceil($totalFactures / $facturesParPage) : 1;
-$stmt = $pdo->prepare("SELECT f.*, c.NameEntreprise, c.ICE, c.Adresse, c.Email, c.Contact, c.NumeroGSM, c.NumeroFixe, c.Activite 
-                       FROM factures f 
-                       JOIN liste_fourniseur_client c ON f.ClientID = c.ID 
-                       ORDER BY f.Date_Creation DESC
-                       LIMIT :debut, :limite");
-$stmt->bindValue(':debut', $debut, PDO::PARAM_INT);
+
+$sql = "SELECT f.*, c.NameEntreprise, c.ICE, c.Adresse, c.Email, c.Contact, c.NumeroGSM, c.NumeroFixe, c.Activite
+        FROM factures f 
+        JOIN liste_fourniseur_client c ON f.ClientID = c.ID
+        WHERE f.user_id = :user_id
+        ORDER BY f.Date_Creation DESC
+        LIMIT :limite OFFSET :debut";
+
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->bindValue(':limite', $facturesParPage, PDO::PARAM_INT);
+$stmt->bindValue(':debut', $debut, PDO::PARAM_INT);
 $stmt->execute();
+
 $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 

@@ -1,25 +1,38 @@
 <?php
 include_once 'Database.php';
 
+session_start();
+
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+$user_id = $_SESSION['user']['id'];
 $limite = 10;
 
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
 $offset = ($page - 1) * $limite;
 
-$countStmt = $pdo->query("SELECT COUNT(*) FROM liste_fourniseur_client WHERE role='Fournisseur'");
+$countSql = "SELECT COUNT(*) FROM liste_fourniseur_client WHERE role = 'Fournisseur' AND user_id = :user_id";
+$countStmt = $pdo->prepare($countSql);
+$countStmt->execute([':user_id' => $user_id]);
 $totalRecords = $countStmt->fetchColumn();
+
 $totalPages = ceil($totalRecords / $limite);
 
-$sql = "SELECT *
+$sql = "SELECT * 
         FROM liste_fourniseur_client 
-        WHERE role='Fournisseur'
+        WHERE role = 'Fournisseur' AND user_id = :user_id
         LIMIT :limit OFFSET :offset";
 
 $stmt = $pdo->prepare($sql);
+$stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->bindValue(':limit', $limite, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
+
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>

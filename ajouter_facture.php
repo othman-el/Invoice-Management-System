@@ -3,100 +3,114 @@ require 'vendor/autoload.php';
 use setasign\Fpdi\Fpdi;
 
 include_once 'Database.php';
+session_start();
 
-$sql_c = "SELECT * FROM liste_fourniseur_client WHERE Role = 'Client'";
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+$user_id = $_SESSION['user']['id'];
+
+$sql_c = "SELECT * FROM liste_fourniseur_client WHERE Role = 'Client' AND user_id = :user_id";
 $stmt = $pdo->prepare($sql_c);
-$stmt->execute();
+$stmt->execute([':user_id' => $user_id]);
 $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $ClientID = $_POST['ClientID'];
-    $type = $_POST['Type'];
-    $N_facture = $_POST['N_facture'];
+    $ClientID = $_POST['ClientID'] ?? null;
+    $type = $_POST['Type'] ?? '';
+    $N_facture = $_POST['N_facture'] ?? '';
     $tva = 20;
     $date_creation = date('Y-m-d H:i:s');
     $conditions = $_POST['Conditions'] ?? '';
     $date_validite = $_POST['Datee'] ?? '';
     $livraison = $_POST['livraison'] ?? '';
+    $condition_re = $_POST['condition_re'] ?? '';
 
     $designations = $_POST['Designation'] ?? [];
     $quantities = $_POST['Quantite'] ?? [];
     $amounts = $_POST['Montant_HT'] ?? [];
-    
+
     $totalHT = 0;
     $validItems = [];
-    
+
     for ($i = 0; $i < count($designations); $i++) {
-        if (!empty($designations[$i]) && !empty($quantities[$i]) && !empty($amounts[$i])) {
-            $quantity = intval($quantities[$i]);
-            $prix_unit = floatval($amounts[$i]);
+        $designation = trim($designations[$i]);
+        $quantity = intval($quantities[$i]);
+        $prix_unit = floatval($amounts[$i]);
+
+        if ($designation !== '' && $quantity > 0 && $prix_unit > 0) {
             $montant_ht = $quantity * $prix_unit;
-            
+
             $validItems[] = [
-                'designation' => trim($designations[$i]),
+                'designation' => $designation,
                 'quantite' => $quantity,
                 'prix_unit' => $prix_unit,
                 'montant_ht' => $montant_ht,
                 'ordre' => $i + 1
             ];
-            
+
             $totalHT += $montant_ht;
         }
     }
-    
+
+    if (empty($validItems)) {
+        echo "<p style='color:red;text-align:center;'>Vous devez ajouter au moins un article valide.</p>";
+        exit;
+    }
+
     $totalTTC = $totalHT + ($totalHT * $tva / 100);
 
     try {
         $pdo->beginTransaction();
 
         $sqlFacture = "INSERT INTO factures 
-            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation, Conditions, Datee, livraison)  
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation, Conditions, condition_re, Datee, livraison, user_id)  
+            VALUES (:clientid, :n_facture, :type, :tva, :montant_ht, :montant_ttc, :date_creation, :conditions, :condition_re, :date_validite, :livraison, :user_id)";
+
         $stmtFacture = $pdo->prepare($sqlFacture);
         $stmtFacture->execute([
-            $ClientID,
-            $N_facture,
-            $type,
-            $tva,
-            $totalHT,
-            $totalTTC,
-            $date_creation ,
-            $conditions,
-            $date_validite,
-            $livraison
+            ':clientid' => $ClientID,
+            ':n_facture' => $N_facture,
+            ':type' => $type,
+            ':tva' => $tva,
+            ':montant_ht' => $totalHT,
+            ':montant_ttc' => $totalTTC,
+            ':date_creation' => $date_creation,
+            ':conditions' => $conditions,
+            ':condition_re' => $condition_re,
+            ':date_validite' => $date_validite,
+            ':livraison' => $livraison,
+            ':user_id' => $user_id
         ]);
 
         $factureID = $pdo->lastInsertId();
 
         $sqlItems = "INSERT INTO facture_items 
             (FactureID, Designation, Quantite, Prix_Unit, Montant_HT, ordre) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-        
+            VALUES (:factureid, :designation, :quantite, :prix_unit, :montant_ht, :ordre)";
+
         $stmtItems = $pdo->prepare($sqlItems);
-        
+
         foreach ($validItems as $item) {
             $stmtItems->execute([
-                $factureID,
-                $item['designation'],
-                $item['quantite'],
-                $item['prix_unit'],
-                $item['montant_ht'],
-                $item['ordre']
-
-
-                
+                ':factureid' => $factureID,
+                ':designation' => $item['designation'],
+                ':quantite' => $item['quantite'],
+                ':prix_unit' => $item['prix_unit'],
+                ':montant_ht' => $item['montant_ht'],
+                ':ordre' => $item['ordre']
             ]);
         }
 
         $pdo->commit();
-        
-        $savedItemsCount = count($validItems);
+
         header("Location: Liste_Facturation.php");
-        exit();       
+        exit();
+
     } catch (Exception $e) {
         $pdo->rollBack();
-        echo "<script>alert('Erreur lors de l'ajout de la facture : " . $e->getMessage() . "');</script>";
+        echo "<script>alert('Erreur lors de l\'ajout de la facture : " . htmlspecialchars($e->getMessage()) . "');</script>";
     }
 }
 
@@ -105,34 +119,38 @@ if (isset($_GET['show_invoices'])) {
         $sql = "SELECT f.*, c.NameEntreprise as client_name 
                 FROM factures f 
                 LEFT JOIN liste_fourniseur_client c ON f.ClientID = c.ID 
+                WHERE f.user_id = :user_id
                 ORDER BY f.Date_Creation DESC LIMIT 10";
+
         $stmt = $pdo->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':user_id' => $user_id]);
         $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        echo "<h3>Dernières factures :</h3>";
+
+        echo "<h3>Dernières 10 factures :</h3>";
         foreach ($factures as $facture) {
             echo "<div style='border: 1px solid #ccc; margin: 10px; padding: 10px;'>";
-            echo "<h4>Facture N° : {$facture['N_facture']}</h4>";
-            echo "<p>Client : {$facture['client_name']}</p>";
-            echo "<p>Total TTC : {$facture['Montant_Total_TTC']}DH</p>";
-            
-            $sqlItems = "SELECT * FROM facture_items WHERE FactureID = ? ORDER BY ordre";
+            echo "<h4>Numéro de facture : " . htmlspecialchars($facture['N_facture']) . "</h4>";
+            echo "<p>Client : " . htmlspecialchars($facture['client_name']) . "</p>";
+            echo "<p>Total TTC : " . number_format($facture['Montant_Total_TTC'], 2) . " DH</p>";
+
+            $sqlItems = "SELECT * FROM facture_items WHERE FactureID = :factureid ORDER BY ordre";
             $stmtItems = $pdo->prepare($sqlItems);
-            $stmtItems->execute([$facture['ID']]);
+            $stmtItems->execute([':factureid' => $facture['ID']]);
             $items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
-            
+
             echo "<h5>Articles :</h5><ul>";
             foreach ($items as $item) {
-                echo "<li>{$item['Designation']} - Quantité : {$item['Quantite']} - Prix unitaire : {$item['Prix_Unit']}DH - Total HT : {$item['Montant_HT']}DH</li>";
+                echo "<li>" . htmlspecialchars($item['Designation']) . " - Quantité : " . intval($item['Quantite']) .
+                     " - Prix unitaire : " . number_format($item['Prix_Unit'], 2) . " DH - Total HT : " . number_format($item['Montant_HT'], 2) . " DH</li>";
             }
             echo "</ul></div>";
         }
     } catch (Exception $e) {
-        echo "Erreur lors de l'affichage des factures : " . $e->getMessage();
+        echo "Erreur lors de l'affichage des factures : " . htmlspecialchars($e->getMessage());
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -236,6 +254,7 @@ if (isset($_GET['show_invoices'])) {
                             <th>Quantité</th>
                             <th>Prix Unit</th>
                             <th>TVA (%)</th>
+                            <th>Conditions de réglement</th>
                             <th>Conditions de paiement</th>
                             <th>Date de validité</th>
                             <th>Délai de livraison</th>
@@ -287,16 +306,21 @@ if (isset($_GET['show_invoices'])) {
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
                             </td>
                             <td>
-                                <input type="text" name="Conditions" required
+                                <input type="text" name="condition_re"
+                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                    placeholder="Conditions de réglement">
+                            </td>
+                            <td>
+                                <input type="text" name="Conditions"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
                                     placeholder="Conditions de paiement">
                             </td>
                             <td>
-                                <input type="date" name="Datee" required
+                                <input type="date" name="Datee"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
                             </td>
                             <td>
-                                <input type="text" name="livraison" required
+                                <input type="text" name="livraison"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
                                     placeholder="Délai de livraison">
                             </td>
@@ -326,8 +350,8 @@ if (isset($_GET['show_invoices'])) {
 
             <div class="text-center mt-4">
                 <button type="submit" class="btn px-5 py-2 rounded-pill"
-                    style="background-color: #4f57c7; color: white;">
-                    Ajouter une facture
+                    style="background-color: #009fbc; color: white;">
+                    Ajouter
                 </button>
             </div>
         </form>
@@ -387,6 +411,7 @@ if (isset($_GET['show_invoices'])) {
                     class="form-control rounded-pill bg-light border-0"
                     placeholder="Montant" onchange="calculateTotal()">
             </td>
+            <td class="empty-cell"></td>
             <td class="empty-cell"></td>
             <td class="empty-cell"></td>
             <td class="empty-cell"></td>

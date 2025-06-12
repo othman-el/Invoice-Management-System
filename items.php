@@ -1,35 +1,40 @@
 <?php 
 include_once 'Database.php';
 session_start();
+
 if (!isset($_SESSION['user'])) {
     header("Location: connexion.php");
     exit;
 }
-$sql_i = "SELECT * FROM items JOIN liste_fourniseur_client ON items.Fournisseur = liste_fourniseur_client.ID";
-$stmt = $pdo->prepare($sql_i);    
-$stmt->execute();
-$items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+$user_id = $_SESSION['user']['id'];
 
 $limit = 10; 
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-$countStmt = $pdo->query("SELECT COUNT(*) FROM items");
+$countSql = "SELECT COUNT(*) FROM items WHERE user_id = :user_id";
+$countStmt = $pdo->prepare($countSql);
+$countStmt->execute([':user_id' => $user_id]);
 $totalItems = $countStmt->fetchColumn();
 $totalPages = ceil($totalItems / $limit);
 
-$sql_i = "SELECT * FROM items 
+$sql_i = "SELECT items.*, liste_fourniseur_client.* 
+          FROM items 
           JOIN liste_fourniseur_client ON items.Fournisseur = liste_fourniseur_client.ID 
+          WHERE items.user_id = :user_id
           ORDER BY items.ID DESC 
           LIMIT :limit OFFSET :offset";
 
-$stmt = $pdo->prepare($sql_i);    
+$stmt = $pdo->prepare($sql_i);
+$stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
+
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">

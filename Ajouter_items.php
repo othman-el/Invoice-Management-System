@@ -6,10 +6,11 @@ if (!isset($_SESSION['user'])) {
     header("Location: connexion.php");
     exit;
 }
+$user_id = $_SESSION['user']['id'];
 
-$sql = "SELECT * FROM liste_fourniseur_client";
+$sql = "SELECT * FROM liste_fourniseur_client WHERE user_id = :user_id";
 $stmt = $pdo->prepare($sql);        
-$stmt->execute();
+$stmt->execute([':user_id' => $user_id]);
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -34,36 +35,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $mt_ttc = $mt_ht + ($mt_ht * $tva / 100);
 
         $insertSql = "INSERT INTO items 
-        (Date, Fournisseur, N_Facture, Article, Designation, Qte, Montant_uHT, Total_Uht, TVA, TOTAL_TTC, Date_c, N_Devis, N_Facture_C, Client, Code_client, Mt_HT, Mt_TTC) 
+        (Date, Fournisseur, N_Facture, Article, Designation, Qte, Montant_uHT, Total_Uht, TVA, TOTAL_TTC, Date_c, N_Devis, N_Facture_C, Client, Code_client, Mt_HT, Mt_TTC, user_id) 
         VALUES 
-        (:date, :fournisseur, :n_facture, :article, :designation, :qte, :montant_uht, :total_uht, :tva, :total_ttc, :date_c, :n_devis, :n_facture_c, :client, :code_client, :mt_ht, :mt_ttc)";
+        (:date, :fournisseur, :n_facture, :article, :designation, :qte, :montant_uht, :total_uht, :tva, :total_ttc, :date_c, :n_devis, :n_facture_c, :client, :code_client, :mt_ht, :mt_ttc, :user_id)";
         
         $insertStmt = $pdo->prepare($insertSql);
-        $insertStmt->execute([
-            ':date' => $date,
-            ':fournisseur' => $fournisseur,
-            ':n_facture' => $n_facture,
-            ':article' => $article,
-            ':designation' => $designation,
-            ':qte' => $qte,
-            ':montant_uht' => $montant_uht,
-            ':total_uht' => $total_uht,
-            ':tva' => $tva,
-            ':total_ttc' => $total_ttc,
-            ':date_c' => $date_c,
-            ':n_devis' => $n_devis,
-            ':n_facture_c' => $n_facture_c,
-            ':client' => $client,
-            ':code_client' => $code_client,
-            ':mt_ht' => $mt_ht,
-            ':mt_ttc' => $mt_ttc
-        ]);
+        try {
+            $insertStmt->execute([
+                ':date' => $date,
+                ':fournisseur' => $fournisseur,
+                ':n_facture' => $n_facture,
+                ':article' => $article,
+                ':designation' => $designation,
+                ':qte' => $qte,
+                ':montant_uht' => $montant_uht,
+                ':total_uht' => $total_uht,
+                ':tva' => $tva,
+                ':total_ttc' => $total_ttc,
+                ':date_c' => $date_c,
+                ':n_devis' => $n_devis,
+                ':n_facture_c' => $n_facture_c,
+                ':client' => $client,
+                ':code_client' => $code_client,
+                ':mt_ht' => $mt_ht,
+                ':mt_ttc' => $mt_ttc,
+                ':user_id' => $user_id
+                           
 
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
+            ]);
+             header("Location: " . $_SERVER['PHP_SELF']);
+              header("Location:  items.php");
+            exit;
+        } catch (PDOException $e) {
+            echo "<p style='color:red; text-align:center;'>Erreur lors de l'ajout de l'article : " . htmlspecialchars($e->getMessage()) . "</p>";
+        }
+    } else {
+        echo "<p style='color:red; text-align:center;'>Veuillez remplir les champs Quantité et Montant Unitaire HT.</p>";
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -234,7 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="row mt-5">
                         <div class="col-12 text-center">
                             <button type="submit" class="btn rounded-pill px-5"
-                                style="background-color: #4f57c7; color: white;">Ajouter</button>
+                                style="background-color: #009fbc; color: white;">Ajouter</button>
                         </div>
                     </div>
 

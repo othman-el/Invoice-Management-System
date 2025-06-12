@@ -12,6 +12,11 @@
     --main-bg: #f3f3f3;
 }
 
+.header {
+    background-color: #ffffff;
+    color: #46b6cb;
+}
+
 .sidebar {
     background-color: var(--sidebar-bg);
     min-height: 100vh;
@@ -175,7 +180,7 @@
             <img src="images/logo.png" alt="logo" width="130px" height="130px">
         </div>
         <div class="flex-grow-1 text-center">
-            <h1 class="h2 mb-0 fw-light">Gestion des facturation</h1>
+            <h1>Gestion des facturation</h1>
         </div>
         <div style="width:130px;"></div>
     </div>

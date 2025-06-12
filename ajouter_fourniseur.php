@@ -1,6 +1,12 @@
 <?php
 include_once 'Database.php';
+session_start();
 
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+$user_id = $_SESSION['user']['id'];
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,17 +20,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $activite = $_POST['activite'] ?? '';
     $role = $_POST['role'] ?? '';
 
-    $checkIce = $pdo->prepare("SELECT COUNT(*) FROM liste_fourniseur_client WHERE ice = :ice");
-    $checkIce->execute([':ice' => $ice]);
-    $iceExists = $checkIce->fetchColumn();
+   $checkIce = $pdo->prepare("SELECT COUNT(*) FROM liste_fourniseur_client WHERE ice = :ice AND user_id = :user_id");
+$checkIce->execute([':ice' => $ice, ':user_id' => $user_id]);
+$iceExists = $checkIce->fetchColumn();
 
-    $checkEmail = $pdo->prepare("SELECT COUNT(*) FROM liste_fourniseur_client WHERE Email = :email");
-    $checkEmail->execute([':email' => $email]);
-    $emailExists = $checkEmail->fetchColumn();
+$checkEmail = $pdo->prepare("SELECT COUNT(*) FROM liste_fourniseur_client WHERE Email = :email AND user_id = :user_id");
+$checkEmail->execute([':email' => $email, ':user_id' => $user_id]);
+$emailExists = $checkEmail->fetchColumn();
 
-    $checkContact = $pdo->prepare("SELECT COUNT(*) FROM liste_fourniseur_client WHERE Contact = :contact");
-    $checkContact->execute([':contact' => $contact]);
-    $contactExists = $checkContact->fetchColumn();
+$checkContact = $pdo->prepare("SELECT COUNT(*) FROM liste_fourniseur_client WHERE Contact = :contact AND user_id = :user_id");
+$checkContact->execute([':contact' => $contact, ':user_id' => $user_id]);
+$contactExists = $checkContact->fetchColumn();
 
     if ($iceExists && $emailExists && $contactExists) {
         $message = "<p style='color:orange;text-align:center;'>ICE de l'entreprise et Email existent déjà.</p>";
@@ -37,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = "<p style='color:orange;text-align:center;'>Contact existe déjà.</p>";
     } else {
      $sql = "INSERT INTO liste_fourniseur_client 
-        (NameEntreprise, ICE, Adresse, Email, Contact, NumeroGSM, NumeroFixe, Activite, Role)
-        VALUES (:name, :ice, :adresse, :email, :contact, :numeroGSM, :numeroFix, :activite, :role)";
+        (NameEntreprise, ICE, Adresse, Email, Contact, NumeroGSM, NumeroFixe, Activite, Role,user_id)
+        VALUES (:name, :ice, :adresse, :email, :contact, :numeroGSM, :numeroFix, :activite, :role,:user_id)";
 
 $stmt = $pdo->prepare($sql);
 
@@ -52,7 +58,8 @@ $stmt = $pdo->prepare($sql);
             ':numeroGSM' => $numeroGSM,
             ':numeroFix' => $numeroFix,
             ':activite' => $activite,
-            ':role' => $role
+            ':role' => $role,
+            ':user_id' => $user_id
             ]);
              $lastId = $pdo->lastInsertId();
 
@@ -64,7 +71,8 @@ $stmt = $pdo->prepare($sql);
                 ':code' => $codeReference,
                 ':id' => $lastId
             ]);
-            $message = "<p style='color:green;text-align:center;'>Utilisateur ajouté avec succès !</p>";
+            header("Location: Liste_fourniseur.php");
+            exit;
         } catch (PDOException $e) {
             $message = "<p style='color:red;text-align:center;'>Erreur lors de l'ajout : " . $e->getMessage() . "</p>";
         }
@@ -167,7 +175,7 @@ $stmt = $pdo->prepare($sql);
                         <div class="row mt-5">
                             <div class="col-12 text-center">
                                 <button type="submit" class="btn rounded-pill px-5"
-                                    style="background-color: #4f57c7; color: white;">Enregistrer</button>
+                                    style="background-color: #009fbc; color: white;">Ajouter</button>
                             </div>
                         </div>
                     </form>

@@ -6,25 +6,27 @@ if (!isset($_SESSION['user'])) {
     header("Location: connexion.php");
     exit;
 }
+$user_id = $_SESSION['user']['id'];
 
 $limit = 10;
 
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int) $_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
-
-
-$totalStmt = $pdo->query("SELECT COUNT(*) FROM charge_fix");
+$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM charge_fix WHERE user_id = :user_id");
+$totalStmt->execute([':user_id' => $user_id]);
 $totalRows = $totalStmt->fetchColumn();
 $totalPages = ceil($totalRows / $limit);
 
-$sql = "SELECT * FROM charge_fix LIMIT :limit OFFSET :offset";
+$sql = "SELECT * FROM charge_fix WHERE user_id = :user_id LIMIT :limit OFFSET :offset";
 $stmt = $pdo->prepare($sql);
 $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->execute();
 $charges = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">

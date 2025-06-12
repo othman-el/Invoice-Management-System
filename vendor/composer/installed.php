@@ -3,9 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-
-        'reference' => 'ca5c09d7b1aba962cea3296c236c37348d90f060',
-
+        'reference' => '545aea0d872aa1637db32ff04429aea14a3287f2',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -15,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ca5c09d7b1aba962cea3296c236c37348d90f060',
+            'reference' => '545aea0d872aa1637db32ff04429aea14a3287f2',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -57,7 +55,6 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
-        
         'sabberworm/php-css-parser' => array(
             'pretty_version' => 'v8.8.0',
             'version' => '8.8.0.0',

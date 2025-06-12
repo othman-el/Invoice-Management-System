@@ -1,24 +1,32 @@
 <?php
 include_once 'Database.php';
+session_start();
+
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+$user_id = $_SESSION['user']['id'];
 $limit = 10; 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $start = ($page - 1) * $limit;
 
-$countStmt = $pdo->prepare("SELECT COUNT(*) as total FROM liste_fourniseur_client WHERE role = 'Client'");
-$countStmt->execute();
+$countStmt = $pdo->prepare("SELECT COUNT(*) as total FROM liste_fourniseur_client WHERE role = 'Client' AND user_id = :user_id");
+$countStmt->execute([':user_id' => $user_id]);
 $totalClients = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
 $totalPages = ceil($totalClients / $limit);
 
 $sql = "SELECT * FROM liste_fourniseur_client
-        WHERE role = 'Client'
+        WHERE role = 'Client' AND user_id = :user_id
         LIMIT :limit OFFSET :offset";
 $stmt = $pdo->prepare($sql);
+$stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
 $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $start, PDO::PARAM_INT);
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 

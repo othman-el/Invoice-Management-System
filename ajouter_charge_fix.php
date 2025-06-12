@@ -6,10 +6,11 @@ if (!isset($_SESSION['user'])) {
     header("Location: connexion.php");
     exit;
 }
+$user_id = $_SESSION['user']['id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sql = "INSERT INTO charge_fix (DESIGNATION, Date_Achat, M, TOTAL_OUT, Montant, Code_REF, Categorie)
-            VALUES (:designation, :date_achat, :m, :total_out, :montant, :code_ref, :categorie)";
+    $sql = "INSERT INTO charge_fix (DESIGNATION, Date_Achat, M, TOTAL_OUT, Montant, Code_REF, Categorie,user_id)
+            VALUES (:designation, :date_achat, :m, :total_out, :montant, :code_ref, :categorie,:user_id)";
     
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
@@ -20,9 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ':montant'     => $_POST['montant'],
         ':code_ref'    => $_POST['code_ref'],
         ':categorie'   => $_POST['categorie'],
+        ':user_id' => $user_id
     ]);
 
-    echo "<div class='alert alert-success'>La charge fixe a été ajoutée avec succès.</div>";
+header("Location: Charge_fix.php");
+exit;
 }
 ?>
 <!DOCTYPE html>
@@ -114,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="row mt-5">
                         <div class="col-12 text-center">
                             <button type="submit" class="btn rounded-pill px-5"
-                                style="background-color: #4f57c7; color: white;">Ajouter</button>
+                                style="background-color: #009fbc; color: white;">Ajouter</button>
                         </div>
                     </div>
 

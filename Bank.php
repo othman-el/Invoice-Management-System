@@ -5,9 +5,11 @@ if (!isset($_SESSION['user'])) {
     header("Location: connexion.php");
     exit;
 }
-$sql = "SELECT * FROM bank";
+$user_id = $_SESSION['user']['id'];
+
+$sql = "SELECT * FROM bank WHERE user_id = :user_id";
 $stmt = $pdo->prepare($sql);
-$stmt->execute();
+$stmt->execute([':user_id' => $user_id]);
 $banks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>

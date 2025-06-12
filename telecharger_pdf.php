@@ -46,7 +46,7 @@ try {
     $dompdf = new Dompdf($options);
 
     ob_start();
-    ?>
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -71,10 +71,28 @@ try {
         margin: 0;
     }
 
-    .row {
-        display: table;
+    .container {
         width: 100%;
         margin-bottom: 20px;
+    }
+
+    .d-flex {
+        display: table;
+        width: 100%;
+    }
+
+    .justify-content-between {
+        display: table;
+        width: 100%;
+    }
+
+    .justify-content-evenly {
+        display: table;
+        width: 100%;
+    }
+
+    .align-items-center {
+        vertical-align: middle;
     }
 
     .col-6 {
@@ -101,10 +119,10 @@ try {
         margin: 0 0 10px 0;
     }
 
-    h5 {
-        color: #0d6efd;
-        font-size: 1rem;
+    h6 {
+        font-size: 1.1rem;
         margin: 0 0 10px 0;
+        font-weight: bold;
     }
 
     p {
@@ -140,58 +158,112 @@ try {
         font-weight: bold;
     }
 
-    .justify-content-end {
-        text-align: right;
+    .totals-container {
+        display: table;
+        width: 100%;
+        margin-top: 20px;
     }
 
-    .col-md-6 {
+    .totals-left {
+        display: table-cell;
         width: 50%;
-        margin-left: 50%;
+        padding-right: 15px;
+    }
+
+    .totals-right {
+        display: table-cell;
+        width: 50%;
+        padding-left: 15px;
     }
 
     .totals-table {
         width: 100%;
-        margin-top: 20px;
+    }
+
+    .mb-4 {
+        margin-bottom: 20px;
+    }
+
+    .ms-3 {
+        margin-left: 15px;
+    }
+
+    .ms-4 {
+        margin-left: 20px;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    footer {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .logo-container {
+        display: table-cell;
+        width: 50%;
+        vertical-align: top;
+    }
+
+    .invoice-header {
+        display: table-cell;
+        width: 50%;
+        text-align: right;
+        vertical-align: top;
     }
     </style>
 </head>
 
 <body>
-    <!-- En-tête -->
-    <div class="row">
-        
-        <div class="col-6">
-            <h1 class="text-primary">ENRIQUE TECHNOLOGY</h1>
-            <p>Entrepôt n° 76, Résidence Chahbae D,<br>Av. Louis Van Beethoven, Tanger - Maroc</p>
-            <p>ICE: 003574700000586</p>
-        </div>
-        <div class="col-6 text-end">
-            <h1 class="invoice-title"><?= htmlspecialchars($facture['type']) ?></h1>
-            <p>N°: <?= htmlspecialchars($facture['N_facture']) ?></p>
-            <p>Date: <?= date('d/m/Y', strtotime($facture['Date_Creation'])) ?></p>
-        </div>
-    </div>
-
-    <!-- Infos client -->
-    <div class="row">
-        <div class="col-6">
-            <h5 class="text-primary">Client</h5>
-            <p><strong><?= htmlspecialchars($facture['NameEntreprise']) ?></strong></p>
-            <p>Email: <?= htmlspecialchars($facture['Email']) ?></p>
-            <p>Adresse: <?= htmlspecialchars($facture['Adresse']) ?></p>
-            <p>Contact: <?= htmlspecialchars($facture['Contact']) ?></p>
-            <p>ICE: <?= htmlspecialchars($facture['ICE']) ?></p>
-        </div>
-        <div class="col-6">
-            <h5 class="text-primary">Informations</h5>
-            <p>TVA: <?= htmlspecialchars($facture['TVA']) ?>%</p>
+    <div class="container mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <img src="images/logo.png">
+            </div>
+            <div class=" invoice-header">
+                <h1 class="invoice-title">
+                    <?php
+                    if ($facture['type'] == 'bl') {
+                        echo 'Bon de Livraison';
+                    } elseif ($facture['type'] == 'facture') {
+                        echo 'Facture';
+                    } elseif ($facture['type'] == 'devis') {
+                        echo 'Devis';
+                    }
+                    ?>
+                </h1>
+                <p>N°: <?= htmlspecialchars($facture['N_facture']) ?></p>
+                <p>Date: <?= date('d/m/Y', strtotime($facture['Date_Creation'])) ?></p>
+            </div>
         </div>
     </div>
 
-    <!-- Items -->
-    <div class="row">
+    <div class="container mb-4">
+        <div class="d-flex justify-content-evenly align-items-center">
+            <div class="col-6">
+                <h1 class="text-primary">Émetteur</h1>
+                <h6><strong>ENRIQUE TECHNOLOGY</strong></h6>
+                <p>Entrepôt n° 76, Résidence Chahbae D,<br>Av. Louis Van Beethoven, Tanger - Maroc</p>
+                <p>ICE: 003574700000586</p>
+            </div>
+
+            <div class="col-6 text-end">
+                <h1 class="text-primary">Client</h1>
+                <h6><strong><?= htmlspecialchars($facture['NameEntreprise']) ?></strong></h6>
+                <p>Email: <?= htmlspecialchars($facture['Email']) ?></p>
+                <p>Adresse: <?= htmlspecialchars($facture['Adresse']) ?></p>
+                <p>Contact: <?= htmlspecialchars($facture['Contact']) ?></p>
+                <p>ICE: <?= htmlspecialchars($facture['ICE']) ?></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Items Table -->
+    <div class="container">
         <div class="col-12">
-            <table class="table-bordered">
+            <table class="table-bordered ms-3">
                 <thead class="table-header">
                     <tr>
                         <th>#</th>
@@ -216,25 +288,51 @@ try {
         </div>
     </div>
 
-    <!-- Totaux -->
-    <div class="justify-content-end">
-        <div class="col-md-6">
+    <!-- Totals Section -->
+    <div class="totals-container">
+        <div class="totals-left">
             <table class="table-bordered totals-table">
-                <tr>
-                    <th>Sous-total HT</th>
-                    <td class="text-end"><?= number_format($facture['Montant_Total_HT'], 2) ?>DH</td>
+                <tr class="text-end total-section">
+                    <td>Base</td>
+                    <td>Taux</td>
+                    <td>Taxe</td>
                 </tr>
                 <tr>
-                    <th>TVA (<?= $facture['TVA'] ?>%)</th>
-                    <td class="text-end"><?= number_format($tva_amount, 2) ?>DH</td>
+                    <td class="text-end"><?= number_format($facture['Montant_Total_HT'], 2) ?> DH</td>
+                    <td class="text-end"><?= $facture['TVA'] ?> %</td>
+                    <td class="text-end"><?= number_format($tva_amount, 2) ?> DH</td>
                 </tr>
-                <tr class="total-section">
-                    <th>Total TTC</th>
-                    <td class="text-end"><?= number_format($facture['Montant_Total_TTC'], 2) ?>DH</td>
+            </table>
+        </div>
+        <div class="totals-right">
+            <table class="table-bordered totals-table">
+                <tr class="text-end total-section">
+                    <td>NET A PAYER</td>
+                </tr>
+                <tr>
+                    <td class="text-end"><?= number_format($total_ttc, 2) ?> DH</td>
                 </tr>
             </table>
         </div>
     </div>
+
+    <!-- Additional Information -->
+    <div class="ms-4 text-primary">
+        <p>Conditions de paiement : <?= htmlspecialchars($facture['Conditions']) ?></p>
+        <p>Date de validité : <?= htmlspecialchars($facture['Datee']) ?></p>
+        <p>Délai de livraison : <?= htmlspecialchars($facture['livraison']) ?></p>
+    </div>
+
+    <br>
+
+    <div class="ms-4">
+        <p>Nous sommes à votre disposition pour tout complément d'informations.</p>
+        <p>Nous vous prions d'agréer, Cher Client, nos sincères salutations.</p>
+    </div>
+
+    <footer>
+        <img src="images/unnamed.png" alt="Footer Image">
+    </footer>
 
 </body>
 
@@ -252,3 +350,4 @@ try {
 } catch (Exception $e) {
     echo "Erreur lors de la génération du PDF: " . $e->getMessage();
 }
+?>
