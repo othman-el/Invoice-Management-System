@@ -1,3 +1,14 @@
+<?php 
+
+include 'Database.php';
+
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+$user_id = $_SESSION['user']['id'];
+
+?>
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -199,8 +210,8 @@ h2 {
 
 <div class="sidebar" id="sidebar">
     <div class="user-profile">
-        <h5 class="text-white mb-1">Nom et prénom</h5>
-        <p class="text-white-50 small mb-0">email@example.com</p>
+        <h5 class="text-white mb-1"><?php echo $_SESSION['user']['fname'] . ' ' . $_SESSION['user']['lname']?></h5>
+        <p class="text-white-50 small mb-0"><?php echo $_SESSION['user']['email']?></p>
     </div>
 
     <nav class="nav flex-column">

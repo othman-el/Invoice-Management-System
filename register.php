@@ -38,12 +38,15 @@ $errors[] = "L'enregistrement a échoué. Veuillez réessayer";
 
 <body>
     <div class="form-container">
+         <div class="container mb-4">
+                <img src="images/logo.png" width="150" height="150" style="display: block; margin: 0 auto;" >
+            </div>
         <h2>Créer un compte</h2>
         <?php if ($errors): ?>
         <div class="error"></div>
         <?php endif; ?>
         <form method="post">
-            <input type="text" name="fname" placeholder="Nom" required><br>
+            <input type="text" name="fname" placeholder="Nom" required autofocus ><br>
             <input type="text" name="lname" placeholder="Prénom" required><br>
             <input type="email" name="email" placeholder="E-mail" required><br>
             <input type="password" name="password" placeholder="Password" required><br>

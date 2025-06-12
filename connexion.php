@@ -39,8 +39,11 @@ else {
 </head>
 
 <body>
-    <div class="form-container">
-        <h2>Connexion</h2>
+    <div class="form-container" >
+            <div class="container mb-4">
+                <img src="images/logo.png" width="150" height="150" style="display: block; margin: 0 auto;" >
+            </div>
+       <h2>Connexion</h2>
         <?php if ($errors): ?>
         <div class="error"></div>
         <?php endif; ?>

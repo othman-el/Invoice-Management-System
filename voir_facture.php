@@ -268,7 +268,6 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
                 <table class="table-bordered ms-3">
                     <thead class="table-header">
                         <tr>
-                            <th>#</th>
                             <th>Désignation</th>
                             <th>Quantité</th>
                             <th>Prix Unitaire</th>
@@ -278,7 +277,6 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
                     <tbody>
                         <?php foreach ($items as $index => $item): ?>
                         <tr>
-                            <td class="text-center"><?= $index + 1 ?></td>
                             <td><?= htmlspecialchars($item['Designation']) ?></td>
                             <td class="text-center"><?= $item['Quantite'] ?></td>
                             <td class="text-end"><?= number_format($item['Prix_Unit'], 2) ?>DH</td>

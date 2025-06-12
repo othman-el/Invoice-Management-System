@@ -266,7 +266,6 @@ try {
             <table class="table-bordered ms-3">
                 <thead class="table-header">
                     <tr>
-                        <th>#</th>
                         <th>Désignation</th>
                         <th>Quantité</th>
                         <th>Prix Unitaire</th>
@@ -276,7 +275,6 @@ try {
                 <tbody>
                     <?php foreach ($items as $index => $item): ?>
                     <tr>
-                        <td class="text-center"><?= $index + 1 ?></td>
                         <td><?= htmlspecialchars($item['Designation']) ?></td>
                         <td class="text-center"><?= $item['Quantite'] ?></td>
                         <td class="text-end"><?= number_format($item['Prix_Unit'], 2) ?>DH</td>
@@ -333,7 +331,7 @@ try {
     <footer>
         <img src="images/unnamed.png" alt="Footer Image">
     </footer>
-
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
