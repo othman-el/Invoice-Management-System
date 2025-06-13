@@ -316,6 +316,7 @@ try {
 
     <!-- Additional Information -->
     <div class="ms-4 text-primary">
+        <p>Conditions de réglement : <?= htmlspecialchars($facture['condition_re']) ?></p>
         <p>Conditions de paiement : <?= htmlspecialchars($facture['Conditions']) ?></p>
         <p>Date de validité : <?= htmlspecialchars($facture['Datee']) ?></p>
         <p>Délai de livraison : <?= htmlspecialchars($facture['livraison']) ?></p>
@@ -331,7 +332,7 @@ try {
     <footer>
         <img src="images/unnamed.png" alt="Footer Image">
     </footer>
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
