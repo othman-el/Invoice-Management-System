@@ -1,6 +1,12 @@
 <?php
 include_once 'Database.php';
+session_start();
 
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+$user_id = $_SESSION['user']['id'];
 if (!isset($_GET['id'])) {
     die('ID du fournisseur manquant');
 }

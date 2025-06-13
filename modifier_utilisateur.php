@@ -13,6 +13,13 @@
     <?php
      include './front/head_front.php';
      require_once 'Database.php';
+     session_start();
+
+if (!isset($_SESSION['user'])) {
+    header("Location: connexion.php");
+    exit;
+}
+$user_id = $_SESSION['user']['id'];
      $id = $_GET["id"];
 
 
