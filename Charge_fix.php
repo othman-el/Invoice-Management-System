@@ -129,7 +129,7 @@ $charges = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php endif; ?>
         </ul>
     </nav>
-    <script src="recherche_charge_fix.js"></script>
+    <script src="js/recherche_charge_fix.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 

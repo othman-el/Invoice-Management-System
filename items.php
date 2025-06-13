@@ -157,7 +157,7 @@ $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </nav>
     </div>
 
-    <script src="items.js"></script>
+    <script src="js/items.js"></script>
 </body>
 
 </html>

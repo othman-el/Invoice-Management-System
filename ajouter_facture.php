@@ -160,71 +160,8 @@ if (isset($_GET['show_invoices'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Ajouter Facture</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-    .add-row-btn {
-        background-color: #28a745;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 50%;
-        font-size: 18px;
-        cursor: pointer;
-        margin: 5px;
-        transition: all 0.3s;
-    }
+    <link rel="stylesheet" href="style/style.css">
 
-    .add-row-btn:disabled {
-        background-color: #6c757d;
-        cursor: not-allowed;
-        opacity: 0.6;
-    }
-
-    .remove-row-btn {
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 50%;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .add-row-btn:hover:not(:disabled) {
-        background-color: #218838;
-    }
-
-    .remove-row-btn:hover {
-        background-color: #c82333;
-    }
-
-    .detail-row {
-        background-color: #f8f9fa;
-    }
-
-    .empty-cell {
-        background-color: #e9ecef;
-        border: 1px solid #dee2e6;
-        height: 45px;
-    }
-
-    .detail-indicator {
-        font-size: 0.8em;
-        color: #6c757d;
-        font-style: italic;
-    }
-
-    .table-responsive {
-        overflow-x: auto;
-    }
-
-    .max-rows-warning {
-        color: #dc3545;
-        font-size: 0.8em;
-        margin-top: 5px;
-        font-style: italic;
-    }
-    </style>
 </head>
 
 <body>

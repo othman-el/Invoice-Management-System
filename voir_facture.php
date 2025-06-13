@@ -330,14 +330,14 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
         </p>
         <p class="ms-4 text-primary">
             Délai de livraison : <?= htmlspecialchars($facture['livraison']) ?>
-        </p><br>
+        </p>
         <p class=" ms-4">
             Nous sommes à votre disposition pour tout complément d'informations.
         </p>
         <p class=" ms-4">
             Nous vous prions d'agréer, Cher Client, nos sincères salutations.
         </p>
-    </div><br>
+    </div>
     <footer>
         <img src="images/unnamed" alt="Footer Image">
     </footer>

@@ -42,6 +42,9 @@ try {
     $options = new Options();
     $options->set('defaultFont', 'DejaVu Sans');
     $options->set('isRemoteEnabled', true);
+    $options->set('isHtml5ParserEnabled', true);
+    $options->set('isPhpEnabled', true);
+    $options->set('chroot', __DIR__);
 
     $dompdf = new Dompdf($options);
 
@@ -113,6 +116,12 @@ try {
     .text-center {
         text-align: center;
     }
+
+    .logo-img {
+        max-width: 150px;
+        height: auto;
+    }
+
 
     h1 {
         font-size: 1.5rem;
@@ -196,10 +205,7 @@ try {
         width: 100%;
     }
 
-    footer {
-        margin-top: 30px;
-        text-align: center;
-    }
+
 
     .logo-container {
         display: table-cell;
@@ -220,9 +226,9 @@ try {
     <div class="container mb-4">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <img src="images/logo.png">
+                <img src="<?= 'file://' . __DIR__ . '/images/logo.png' ?>" class="logo-img" alt="Logo">
             </div>
-            <div class=" invoice-header">
+            <div class="invoice-header">
                 <h1 class="invoice-title">
                     <?php
                     if ($facture['type'] == 'bl') {
@@ -322,17 +328,13 @@ try {
         <p>Délai de livraison : <?= htmlspecialchars($facture['livraison']) ?></p>
     </div>
 
-    <br>
-
     <div class="ms-4">
         <p>Nous sommes à votre disposition pour tout complément d'informations.</p>
         <p>Nous vous prions d'agréer, Cher Client, nos sincères salutations.</p>
     </div>
-
     <footer>
-        <img src="images/unnamed.png" alt="Footer Image">
+        <img src="<?= 'file://' . __DIR__ . '/images/unnamed.png' ?>" alt="Footer Image">
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

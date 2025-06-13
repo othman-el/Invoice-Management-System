@@ -154,7 +154,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </nav>
     </div>
 
-    <script src="recherche.js"></script>
+    <script src="js/recherche.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 

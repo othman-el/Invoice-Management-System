@@ -13,20 +13,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->execute([$email]);
+
     if ($stmt->rowCount() > 0) {
         $errors[] = "L'e-mail existe déjà";
-} else {
-
-$stmt = $pdo->prepare("INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)");
-if ($stmt->execute([$fname, $lname, $email, $password])) {
-$success_message = "Inscription réussie ! Vous pouvez maintenant vous connecter";
-} else {
-$errors[] = "L'enregistrement a échoué. Veuillez réessayer";
+    } else {
+        $stmt = $pdo->prepare("INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)");
+        if ($stmt->execute([$fname, $lname, $email, $password])) {
+            header('Location: connexion.php');
+            exit;
+        } else {
+            $errors[] = "L'enregistrement a échoué. Veuillez réessayer";
+        }
+    }
 }
-}
-}
-
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -38,15 +39,15 @@ $errors[] = "L'enregistrement a échoué. Veuillez réessayer";
 
 <body>
     <div class="form-container">
-         <div class="container mb-4">
-                <img src="images/logo.png" width="150" height="150" style="display: block; margin: 0 auto;" >
-            </div>
+        <div class="container mb-4">
+            <img src="images/logo.png" width="150" height="150" style="display: block; margin: 0 auto;">
+        </div>
         <h2>Créer un compte</h2>
         <?php if ($errors): ?>
         <div class="error"></div>
         <?php endif; ?>
         <form method="post">
-            <input type="text" name="fname" placeholder="Nom" required autofocus ><br>
+            <input type="text" name="fname" placeholder="Nom" required autofocus><br>
             <input type="text" name="lname" placeholder="Prénom" required><br>
             <input type="email" name="email" placeholder="E-mail" required><br>
             <input type="password" name="password" placeholder="Password" required><br>
