@@ -225,18 +225,18 @@ h2 {
 
         <a class="nav-link" href="Liste_Client.php">
             <i class="bi bi-people"></i>
-            Les clients
+            client
         </a>
 
         <a class="nav-link" href="liste_fourniseur.php">
             <i class="bi bi-truck"></i>
-            Les fournisseurs
+            fournisseur
         </a>
 
 
         <a class="nav-link" href="Liste_Facturation.php">
             <i class="bi bi-file-text"></i>
-            Les factures
+            facture
         </a>
 
         <a class="nav-link" href="Bank.php">
@@ -245,18 +245,18 @@ h2 {
                 <path
                     d="M12 2L2 7v2h20V7L12 2zM4 10v10h2V10H4zm4 0v10h2V10H8zm4 0v10h2V10h-2zm4 0v10h2V10h-2zm4 0v10h2V10h-2zM2 22h20v-2H2v2z" />
             </svg>
-            Banks
+            Caisse
         </a>
 
         <a class="nav-link" href="Charge_fix.php">
             <i class="bi bi-currency-dollar"></i>
-            Charge fixe
+            Charge
         </a>
 
         <a class="nav-link" href="items.php">
             <i class="bi bi-plus-circle"></i>
-            Items
-        </a>
+            Service achat
+        </a> 
     </nav>
 
     <div class="logout-section">

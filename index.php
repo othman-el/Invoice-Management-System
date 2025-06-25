@@ -59,15 +59,15 @@ $countfr = $stmtfr->fetchColumn();
 
             <a class="nav-link" href="Liste_Client.php">
                 <i class="bi bi-people"></i>
-                Les clients
+                client
             </a>
             <a class="nav-link" href="liste_fourniseur.php">
                 <i class="bi bi-truck"></i>
-                Les fournisseurs
+                fournisseur
             </a>
             <a class="nav-link" href="Liste_Facturation.php">
                 <i class="bi bi-file-text"></i>
-                Les factures
+                facture
             </a>
             <a class="nav-link" href="Bank.php">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"
@@ -75,16 +75,16 @@ $countfr = $stmtfr->fetchColumn();
                     <path
                         d="M12 2L2 7v2h20V7L12 2zM4 10v10h2V10H4zm4 0v10h2V10H8zm4 0v10h2V10h-2zm4 0v10h2V10h-2zm4 0v10h2V10h-2zM2 22h20v-2H2v2z" />
                 </svg>
-                Banks
+                Caisse
             </a>
 
             <a class="nav-link" href="Charge_fix.php">
                 <i class="bi bi-currency-dollar"></i>
-                Charge fixe
+                Charge
             </a>
             <a class="nav-link" href="items.php">
                 <i class="bi bi-plus-circle"></i>
-                Items
+                Service achat
             </a>
         </nav>
 
@@ -125,7 +125,7 @@ $countfr = $stmtfr->fetchColumn();
                         </svg>
 
                         <div class="card-body p-0">
-                            <h3>Les clients :</h3>
+                            <h3>client </h3>
                             <div class="number">
                                 <?php echo $count; ?>
                             </div>
@@ -144,7 +144,7 @@ $countfr = $stmtfr->fetchColumn();
                         </svg>
 
                         <div class="card-body p-0">
-                            <h3>Les fournisseurs :</h3>
+                            <h3>fournisseurs</h3>
                             <div class="number">
                                 <?php echo $countf; ?>
                             </div>
@@ -162,7 +162,7 @@ $countfr = $stmtfr->fetchColumn();
                         </svg>
 
                         <div class="card-body p-0">
-                            <h3>Les factures :</h3>
+                            <h3>factures </h3>
                             <div class="number">
                                 <?php echo $countfr; ?>
                             </div>
