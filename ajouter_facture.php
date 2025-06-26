@@ -20,7 +20,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ClientID = $_POST['ClientID'] ?? null;
     $type = $_POST['Type'] ?? '';
     $N_facture = $_POST['N_facture'] ?? '';
-    $tva = 20;
+    $tva = floatval($_POST['TVA'] ?? 20);
+    
+    if ($tva < 0 || $tva > 100) {
+        echo "<p style='color:red;text-align:center;'>Le taux de TVA doit être compris entre 0% et 100%</p>";
+        exit;
+    }
+    
     $date_creation = date('Y-m-d H:i:s');
     $conditions = $_POST['Conditions'] ?? '';
     $date_validite = $_POST['Datee'] ?? '';
@@ -59,14 +65,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $totalTTC = $totalHT + ($totalHT * $tva / 100);
+    $montant_taxe = $totalHT * $tva / 100;
+    $totalTTC = $totalHT + $montant_taxe;
 
     try {
         $pdo->beginTransaction();
 
         $sqlFacture = "INSERT INTO factures 
-            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation, Conditions, condition_re, Datee, livraison, user_id)  
-            VALUES (:clientid, :n_facture, :type, :tva, :montant_ht, :montant_ttc, :date_creation, :conditions, :condition_re, :date_validite, :livraison, :user_id)";
+            (ClientID, N_facture, type, TVA, taxe, Montant_Total_HT, Montant_Total_TTC, Date_Creation, Conditions, condition_re, Datee, livraison, user_id)  
+            VALUES (:clientid, :n_facture, :type, :tva, :taxe, :montant_ht, :montant_ttc, :date_creation, :conditions, :condition_re, :date_validite, :livraison, :user_id)";
 
         $stmtFacture = $pdo->prepare($sqlFacture);
         $stmtFacture->execute([
@@ -74,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':n_facture' => $N_facture,
             ':type' => $type,
             ':tva' => $tva,
+            ':taxe' => $montant_taxe,
             ':montant_ht' => $totalHT,
             ':montant_ttc' => $totalTTC,
             ':date_creation' => $date_creation,
@@ -110,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } catch (Exception $e) {
         $pdo->rollBack();
-        echo "<script>alert('Erreur lors de l\'ajout de la facture : " . htmlspecialchars($e->getMessage()) . "');</script>";
+        echo "<script>alert('Erreur lors de l\\'ajout de la facture : " . htmlspecialchars($e->getMessage()) . "');</script>";
     }
 }
 
@@ -131,6 +139,9 @@ if (isset($_GET['show_invoices'])) {
             echo "<div style='border: 1px solid #ccc; margin: 10px; padding: 10px;'>";
             echo "<h4>Numéro de facture : " . htmlspecialchars($facture['N_facture']) . "</h4>";
             echo "<p>Client : " . htmlspecialchars($facture['client_name']) . "</p>";
+            echo "<p>TVA : " . number_format($facture['TVA'], 2) . "%</p>";
+            echo "<p>Montant TVA : " . number_format($facture['taxe'], 2) . " DH</p>";
+            echo "<p>Total HT : " . number_format($facture['Montant_Total_HT'], 2) . " DH</p>";
             echo "<p>Total TTC : " . number_format($facture['Montant_Total_TTC'], 2) . " DH</p>";
 
             $sqlItems = "SELECT * FROM facture_items WHERE FactureID = :factureid ORDER BY ordre";
@@ -167,7 +178,7 @@ if (isset($_GET['show_invoices'])) {
 <body>
     <?php include './front/head.php'; ?>
 
-    <div class="container py-5">
+    <div class="container py-5" style="margin-left: -11px;">
         <a href="index.php"><button class="retoure">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000"
                     height="40px" width="20px" version="1.1" id="Capa_1" viewBox="0 0 206.108 206.108"
@@ -180,29 +191,30 @@ if (isset($_GET['show_invoices'])) {
         <h2 class="text-center mb-4">Ajouter une nouvelle facture</h2>
 
         <form method="POST" enctype="multipart/form-data" class="mx-auto" style="max-width: 100%;">
-            <div class="table-responsive">
-                <table class="table table-bordered text-center align-middle">
+            <div class="table-responsive" style="width: 117%;">
+                <table class="table table-bordered text-center align-middle" style="width: 100%; table-layout: auto;">
                     <thead class="table-light">
                         <tr>
-                            <th>Client</th>
-                            <th>Type</th>
-                            <th>Numéro de facture</th>
-                            <th>Désignation</th>
-                            <th>Quantité</th>
-                            <th>Prix Unit</th>
-                            <th>TVA (%)</th>
-                            <th>Conditions de réglement</th>
-                            <th>Conditions de paiement</th>
-                            <th>Date de validité</th>
-                            <th>Délai de livraison</th>
-                            <th>Ajouter autre Article</th>
+                            <th style="width: auto;">Client</th>
+                            <th style="width: auto;">Type</th>
+                            <th style="width: auto;">Numéro de facture</th>
+                            <th style="width: auto;">Désignation</th>
+                            <th style="width: auto;">Quantité</th>
+                            <th style="width: auto;">Prix Unit</th>
+                            <th style="width: auto;">TVA (%)</th>
+                            <th style="width: auto;">Conditions de réglement</th>
+                            <th style="width: auto;">Conditions de paiement</th>
+                            <th style="width: auto;">Date de validité</th>
+                            <th style="width: auto;">Délai de livraison</th>
+                            <th style="width: auto;">Ajouter autre Article</th>
                         </tr>
                     </thead>
                     <tbody id="invoice-table-body">
                         <tr class="main-row">
                             <td>
                                 <select name="ClientID" required
-                                    class="form-select rounded-pill bg-secondary bg-opacity-25 border-0">
+                                    class="form-select rounded-pill bg-secondary bg-opacity-25 border-0"
+                                    style="width: 100%;">
                                     <option value="">Sélectionner un client</option>
                                     <?php foreach($clients as $client) :?>
                                     <option value="<?= $client['ID'] ?>">
@@ -212,7 +224,8 @@ if (isset($_GET['show_invoices'])) {
                             </td>
                             <td>
                                 <select name="Type" required
-                                    class="form-select rounded-pill bg-secondary bg-opacity-25 border-0">
+                                    class="form-select rounded-pill bg-secondary bg-opacity-25 border-0"
+                                    style="width: 100%;">
                                     <option value="facture">Facture</option>
                                     <option value="bl">Bon de livraison</option>
                                     <option value="devis">Devis</option>
@@ -221,45 +234,47 @@ if (isset($_GET['show_invoices'])) {
                             <td>
                                 <input type="text" name="N_facture" required
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                    placeholder="Numéro de facture">
+                                    style="width: 100%;" placeholder="Numéro de facture">
                             </td>
                             <td>
                                 <input type="text" name="Designation[]" required
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                    placeholder="Description du produit/service">
+                                    style="width: 100%;" placeholder="Description du produit/service">
                             </td>
                             <td>
                                 <input type="number" name="Quantite[]" required min="1"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                    placeholder="Quantité" onchange="calculateTotal()">
+                                    style="width: 100%;" placeholder="Quantité" onchange="calculateTotal()">
                             </td>
                             <td>
                                 <input type="number" step="0.01" name="Montant_HT[]" required min="0"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                    placeholder="Montant" onchange="calculateTotal()">
+                                    style="width: 100%;" placeholder="Montant" onchange="calculateTotal()">
                             </td>
                             <td>
-                                <input type="number" name="TVA" value="20" readonly
-                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
+                                <input type="number" name="TVA" value="20" min="0" max="100" step="0.01"
+                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                    style="width: 100%;" placeholder="TVA %" onchange="calculateTotal()">
                             </td>
                             <td>
                                 <input type="text" name="condition_re"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                    placeholder="Conditions de réglement">
+                                    style="width: 100%;" placeholder="Conditions de réglement">
                             </td>
                             <td>
                                 <input type="text" name="Conditions"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                    placeholder="Conditions de paiement">
+                                    style="width: 100%;" placeholder="Conditions de paiement">
                             </td>
                             <td>
                                 <input type="date" name="Datee"
-                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
+                                    class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
+                                    style="width: 100%;">
                             </td>
                             <td>
                                 <input type="text" name="livraison"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0"
-                                    placeholder="Délai de livraison">
+                                    style="width: 100%;" placeholder="Délai de livraison">
                             </td>
 
                             <td>
@@ -386,20 +401,45 @@ if (isset($_GET['show_invoices'])) {
     }
 
     function calculateTotal() {
+        let totalHT = 0;
+
         const quantityInputs = document.querySelectorAll('input[name="Quantite[]"]');
         const amountInputs = document.querySelectorAll('input[name="Montant_HT[]"]');
-        let totalHT = 0;
 
         for (let i = 0; i < quantityInputs.length; i++) {
             const quantity = parseFloat(quantityInputs[i].value) || 0;
-            const amount = parseFloat(amountInputs[i].value) || 0;
-            totalHT += quantity * amount;
+            const unitPrice = parseFloat(amountInputs[i].value) || 0;
+
+            if (quantity > 0 && unitPrice > 0) {
+                totalHT += quantity * unitPrice;
+            }
         }
 
-        const totalTTC = totalHT + (totalHT * 0.20);
+        const tvaInput = document.querySelector('input[name="TVA"]');
+        const tvaRate = parseFloat(tvaInput.value) || 0;
+
+        if (tvaRate < 0 || tvaRate > 100) {
+            tvaInput.style.borderColor = 'red';
+            alert('Le taux de TVA doit être compris entre 0% et 100%');
+            tvaInput.focus();
+            return;
+        } else {
+            tvaInput.style.borderColor = '';
+        }
+
+        const totalTTC = totalHT + (totalHT * tvaRate / 100);
+
         document.getElementById('total-ht').textContent = totalHT.toFixed(2);
         document.getElementById('total-ttc').textContent = totalTTC.toFixed(2);
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const tvaInput = document.querySelector('input[name="TVA"]');
+        if (tvaInput) {
+            tvaInput.addEventListener('input', calculateTotal);
+            tvaInput.addEventListener('change', calculateTotal);
+        }
+    });
 
     document.addEventListener('DOMContentLoaded', function() {
         const mainQuantity = document.querySelector('.main-row input[name="Quantite[]"]');

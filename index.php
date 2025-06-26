@@ -19,6 +19,26 @@ $countf = $stmtf->fetchColumn();
 $stmtfr = $pdo->prepare("SELECT count(*) FROM factures WHERE user_id = :user_id");
 $stmtfr->execute([':user_id' => $user_id]);
 $countfr = $stmtfr->fetchColumn();
+
+$stmtff = $pdo->prepare("SELECT count(*) FROM factures WHERE user_id = :user_id AND type = 'facture'");
+$stmtff->execute([':user_id' => $user_id]);
+$countff = $stmtff->fetchColumn();
+
+$stmtfdv = $pdo->prepare("SELECT count(*) FROM factures WHERE user_id = :user_id AND type = 'devis'");
+$stmtfdv->execute([':user_id' => $user_id]);
+$countfdv = $stmtfdv->fetchColumn();
+
+$stmtfbl = $pdo->prepare("SELECT count(*) FROM factures WHERE user_id = :user_id AND type = 'bl'");
+$stmtfbl->execute([':user_id' => $user_id]);
+$countfbl = $stmtfbl->fetchColumn();
+
+$stmtft = $pdo->prepare("SELECT SUM(taxe) AS TVA FROM factures WHERE user_id = :user_id");
+$stmtft->execute([':user_id' => $user_id]);
+$countft = $stmtft->fetchColumn();
+
+$stmtfht = $pdo->prepare("SELECT SUM(Montant_Total_Ht) AS total_ht FROM factures WHERE user_id = :user_id");
+$stmtfht->execute([':user_id' => $user_id]);
+$countfht = $stmtfht->fetchColumn();
 ?>
 
 
@@ -170,6 +190,96 @@ $countfr = $stmtfr->fetchColumn();
                     </div>
                 </div>
 
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card stats-card position-relative overflow-hidden" style="min-height: 150px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="position-absolute"
+                            style="width: 120px; height: 120px; right: 10px; bottom: 10px; opacity: 0.1; color: #000;">
+                            <path
+                                d="M21 2H7c-1.1 0-2 .9-2 2v18l4-4 4 4 4-4 4 4V4c0-1.1-.9-2-2-2zm-4 10H9v-2h8v2zm0-4H9V6h8v2z" />
+                        </svg>
+
+                        <div class="card-body p-0">
+                            <h3>factures(Type)</h3>
+                            <div class="number">
+                                <?php echo $countff; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card stats-card position-relative overflow-hidden" style="min-height: 150px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="position-absolute"
+                            style="width: 120px; height: 120px; right: 10px; bottom: 10px; opacity: 0.1; color: #000;">
+                            <path
+                                d="M21 2H7c-1.1 0-2 .9-2 2v18l4-4 4 4 4-4 4 4V4c0-1.1-.9-2-2-2zm-4 10H9v-2h8v2zm0-4H9V6h8v2z" />
+                        </svg>
+
+                        <div class="card-body p-0">
+                            <h3>Dvise</h3>
+                            <div class="number">
+                                <?php echo $countfdv; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card stats-card position-relative overflow-hidden" style="min-height: 150px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="position-absolute"
+                            style="width: 120px; height: 120px; right: 10px; bottom: 10px; opacity: 0.1; color: #000;">
+                            <path
+                                d="M21 2H7c-1.1 0-2 .9-2 2v18l4-4 4 4 4-4 4 4V4c0-1.1-.9-2-2-2zm-4 10H9v-2h8v2zm0-4H9V6h8v2z" />
+                        </svg>
+
+                        <div class="card-body p-0">
+                            <h3>Bon de Livraison</h3>
+                            <div class="number">
+                                <?php echo $countfbl; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card stats-card position-relative overflow-hidden" style="min-height: 150px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="position-absolute"
+                            style="width: 120px; height: 120px; right: 10px; bottom: 10px; opacity: 0.1; color: #000;">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
+                        </svg>
+
+                        <div class="card-body p-0">
+                            <h3>TVA</h3>
+                            <div class="number">
+                                <?php echo $countft; ?> DH
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4 col-md-6">
+                    <div class="card stats-card position-relative overflow-hidden" style="min-height: 150px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="position-absolute"
+                            style="width: 120px; height: 120px; right: 10px; bottom: 10px; opacity: 0.1; color: #000;">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z" />
+                        </svg>
+
+                        <div class="card-body p-0">
+                            <h3>Montant total HT</h3>
+                            <div class="number">
+                                <?php echo $countfht; ?> DH
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
