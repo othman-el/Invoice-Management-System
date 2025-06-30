@@ -433,7 +433,7 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
         justify-content: space-between;
         align-items: flex-start;
         gap: 20px;
-        margin-top: 60px;
+        margin-top: 220px;
     }
 
     .logos-section {
