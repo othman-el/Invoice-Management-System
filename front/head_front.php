@@ -9,6 +9,7 @@ if (!isset($_SESSION['user'])) {
 $user_id = $_SESSION['user']['id'];
 
 ?>
+
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
@@ -225,18 +226,18 @@ h2 {
 
         <a class="nav-link" href="Liste_Client.php">
             <i class="bi bi-people"></i>
-            Les clients
+            Client
         </a>
 
         <a class="nav-link" href="liste_fourniseur.php">
             <i class="bi bi-truck"></i>
-            Les fournisseurs
+            Fournisseur
         </a>
 
 
         <a class="nav-link" href="Liste_Facturation.php">
             <i class="bi bi-file-text"></i>
-            Les factures
+            Facture
         </a>
 
         <a class="nav-link" href="Bank.php">
@@ -245,17 +246,17 @@ h2 {
                 <path
                     d="M12 2L2 7v2h20V7L12 2zM4 10v10h2V10H4zm4 0v10h2V10H8zm4 0v10h2V10h-2zm4 0v10h2V10h-2zm4 0v10h2V10h-2zM2 22h20v-2H2v2z" />
             </svg>
-            Banks
+            Casse
         </a>
 
         <a class="nav-link" href="Charge_fix.php">
             <i class="bi bi-currency-dollar"></i>
-            Charge fixe
+            Charge
         </a>
 
         <a class="nav-link" href="items.php">
             <i class="bi bi-plus-circle"></i>
-            Items
+            Service achat
         </a>
     </nav>
 

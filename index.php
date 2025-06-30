@@ -79,15 +79,15 @@ $countfht = $stmtfht->fetchColumn();
 
             <a class="nav-link" href="Liste_Client.php">
                 <i class="bi bi-people"></i>
-                Les clients
+                Client
             </a>
             <a class="nav-link" href="liste_fourniseur.php">
                 <i class="bi bi-truck"></i>
-                Les fournisseurs
+                Fournisseur
             </a>
             <a class="nav-link" href="Liste_Facturation.php">
                 <i class="bi bi-file-text"></i>
-                Les factures
+                Facture
             </a>
             <a class="nav-link" href="Bank.php">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"
@@ -95,16 +95,16 @@ $countfht = $stmtfht->fetchColumn();
                     <path
                         d="M12 2L2 7v2h20V7L12 2zM4 10v10h2V10H4zm4 0v10h2V10H8zm4 0v10h2V10h-2zm4 0v10h2V10h-2zm4 0v10h2V10h-2zM2 22h20v-2H2v2z" />
                 </svg>
-                Banks
+                Casse
             </a>
 
             <a class="nav-link" href="Charge_fix.php">
                 <i class="bi bi-currency-dollar"></i>
-                Charge fixe
+                Charge
             </a>
             <a class="nav-link" href="items.php">
                 <i class="bi bi-plus-circle"></i>
-                Items
+                Service achat
             </a>
         </nav>
 
