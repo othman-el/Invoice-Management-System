@@ -149,7 +149,7 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
     .invoice-table {
         width: 100%;
         border-collapse: collapse;
-        margin-bottom: 32px;
+        margin-bottom: 5px;
     }
 
     .invoice-table th {
@@ -433,6 +433,7 @@ $total_ttc = $facture['Montant_Total_HT'] + $tva_amount;
         justify-content: space-between;
         align-items: flex-start;
         gap: 20px;
+        margin-top: 60px;
     }
 
     .logos-section {
