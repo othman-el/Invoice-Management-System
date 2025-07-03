@@ -4,29 +4,64 @@ require_once 'Database.php';
 
 $errors = [];
 $success_message = "";
- 
+
+$fname = $lname = $email = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $fname = htmlspecialchars($_POST['fname']);
-    $lname = htmlspecialchars($_POST['lname']);
-    $email = htmlspecialchars($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $fname = trim($_POST['fname'] ?? '');
+    $lname = trim($_POST['lname'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password_raw = $_POST['password'] ?? '';
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$email]);
+    if (empty($fname)) {
+        $errors[] = "Le prénom est requis.";
+    } elseif (strlen($fname) > 50) {
+        $errors[] = "Le prénom ne doit pas dépasser 50 caractères.";
+    }
 
-    if ($stmt->rowCount() > 0) {
-        $errors[] = "L'e-mail existe déjà";
-    } else {
-        $stmt = $pdo->prepare("INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)");
-        if ($stmt->execute([$fname, $lname, $email, $password])) {
-            header('Location: connexion.php');
-            exit;
-        } else {
-            $errors[] = "L'enregistrement a échoué. Veuillez réessayer";
+    if (empty($lname)) {
+        $errors[] = "Le nom est requis.";
+    } elseif (strlen($lname) > 50) {
+        $errors[] = "Le nom ne doit pas dépasser 50 caractères.";
+    }
+
+    if (empty($email)) {
+        $errors[] = "L'e-mail est requis.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "L'e-mail n'est pas valide.";
+    }
+
+    if (empty($password_raw)) {
+        $errors[] = "Le mot de passe est requis.";
+    } elseif (strlen($password_raw) < 6) {
+        $errors[] = "Le mot de passe doit contenir au moins 6 caractères.";
+    }
+
+    if (empty($errors)) {
+        try {
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            
+            if ($stmt->rowCount() > 0) {
+                $errors[] = "L'e-mail existe déjà.";
+            } else {
+                $password = password_hash($password_raw, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)");
+                if ($stmt->execute([$fname, $lname, $email, $password])) {
+                    $_SESSION['success_message'] = "Inscription réussie. Connectez-vous maintenant.";
+                    header('Location: connexion.php');
+                    exit;
+                } else {
+                    $errors[] = "L'enregistrement a échoué. Veuillez réessayer.";
+                }
+            }
+        } catch (PDOException $e) {
+            $errors[] = "Erreur de base de données : " . $e->getMessage();
         }
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">

@@ -59,15 +59,15 @@ $countfr = $stmtfr->fetchColumn();
 
             <a class="nav-link" href="Liste_Client.php">
                 <i class="bi bi-people"></i>
-                client
+                Client
             </a>
             <a class="nav-link" href="liste_fourniseur.php">
                 <i class="bi bi-truck"></i>
-                fournisseur
+                Fournisseur
             </a>
             <a class="nav-link" href="Liste_Facturation.php">
                 <i class="bi bi-file-text"></i>
-                facture
+                Facture
             </a>
             <a class="nav-link" href="Bank.php">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"
@@ -75,7 +75,7 @@ $countfr = $stmtfr->fetchColumn();
                     <path
                         d="M12 2L2 7v2h20V7L12 2zM4 10v10h2V10H4zm4 0v10h2V10H8zm4 0v10h2V10h-2zm4 0v10h2V10h-2zm4 0v10h2V10h-2zM2 22h20v-2H2v2z" />
                 </svg>
-                Caisse
+                Casse
             </a>
 
             <a class="nav-link" href="Charge_fix.php">
