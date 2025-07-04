@@ -15,30 +15,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($fname)) {
         $errors[] = "Le prénom est requis.";
+    } elseif (strlen($fname) < 2) {
+        $errors[] = "Le prénom doit contenir au moins 2 caractères.";
     } elseif (strlen($fname) > 50) {
         $errors[] = "Le prénom ne doit pas dépasser 50 caractères.";
+    } elseif (!preg_match('/^[a-zA-ZÀ-ÿ\s\-\']+$/u', $fname)) {
+        $errors[] = "Le prénom ne peut contenir que des lettres, espaces, traits d'union et apostrophes.";
     }
 
     if (empty($lname)) {
         $errors[] = "Le nom est requis.";
+    } elseif (strlen($lname) < 2) {
+        $errors[] = "Le nom doit contenir au moins 2 caractères.";
     } elseif (strlen($lname) > 50) {
         $errors[] = "Le nom ne doit pas dépasser 50 caractères.";
+    } elseif (!preg_match('/^[a-zA-ZÀ-ÿ\s\-\']+$/u', $lname)) {
+        $errors[] = "Le nom ne peut contenir que des lettres, espaces, traits d'union et apostrophes.";
     }
 
     if (empty($email)) {
         $errors[] = "L'e-mail est requis.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "L'e-mail n'est pas valide.";
+    } elseif (strlen($email) > 100) {
+        $errors[] = "L'e-mail ne doit pas dépasser 100 caractères.";
+    } elseif (!preg_match('/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/', $email)) {
+        $errors[] = "Format d'e-mail invalide.";
+    } else {
+        $domain = substr(strrchr($email, "@"), 1);
+        if (!checkdnsrr($domain, "MX") && !checkdnsrr($domain, "A")) {
+            $errors[] = "Le domaine de l'e-mail n'existe pas.";
+        }
+        
+        $temp_domains = [
+            'mailinator.com', '10minutemail.com', 'tempmail.org', 'guerrillamail.com',
+            'maildrop.cc', 'temp-mail.org', 'throwaway.email', 'yopmail.com',
+            'fakemailgenerator.com', 'tempail.com', 'mailtemp.info', 'getairmail.com',
+            'sharklasers.com', 'guerrillamailblock.com', 'pokemail.net', 'spam4.me',
+            'emailondeck.com', 'mailcatch.com', 'dispostable.com', 'trashmail.com'
+        ];
+        
+        $domain_lower = strtolower($domain);
+        if (in_array($domain_lower, $temp_domains)) {
+            $errors[] = "Les adresses e-mail temporaires ne sont pas autorisées.";
+        }
+        
+        if (strpos($email, '..') !== false || 
+            strpos($email, '.-') !== false || 
+            strpos($email, '-.') !== false) {
+            $errors[] = "Format d'e-mail invalide.";
+        }
+        
+        $local_part = substr($email, 0, strpos($email, '@'));
+        if (substr($local_part, 0, 1) === '.' || 
+            substr($local_part, -1) === '.' ||
+            substr($local_part, 0, 1) === '-' || 
+            substr($local_part, -1) === '-') {
+            $errors[] = "Format d'e-mail invalide.";
+        }
     }
 
     if (empty($password_raw)) {
         $errors[] = "Le mot de passe est requis.";
-    } elseif (strlen($password_raw) < 6) {
-        $errors[] = "Le mot de passe doit contenir au moins 6 caractères.";
+    } elseif (strlen($password_raw) < 8) {
+        $errors[] = "Le mot de passe doit contenir au moins 8 caractères.";
+    } elseif (strlen($password_raw) > 255) {
+        $errors[] = "Le mot de passe ne doit pas dépasser 255 caractères.";
+    } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/', $password_raw)) {
+        $errors[] = "Le mot de passe doit contenir au moins une lettre minuscule, une majuscule et un chiffre.";
     }
 
     if (empty($errors)) {
         try {
+            if (!isset($pdo) || !$pdo) {
+                $database = new Database();
+                $pdo = $database->getConnection();
+            }
+            
             $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->execute([$email]);
             
@@ -46,7 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $errors[] = "L'e-mail existe déjà.";
             } else {
                 $password = password_hash($password_raw, PASSWORD_DEFAULT);
+                
                 $stmt = $pdo->prepare("INSERT INTO users (fname, lname, email, password) VALUES (?, ?, ?, ?)");
+                
                 if ($stmt->execute([$fname, $lname, $email, $password])) {
                     $_SESSION['success_message'] = "Inscription réussie. Connectez-vous maintenant.";
                     header('Location: connexion.php');
@@ -56,7 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         } catch (PDOException $e) {
-            $errors[] = "Erreur de base de données : " . $e->getMessage();
+            error_log("Database error: " . $e->getMessage());
+            $errors[] = "Une erreur système s'est produite. Veuillez réessayer plus tard.";
+        } catch (Exception $e) {
+            error_log("General error: " . $e->getMessage());
+            $errors[] = "Une erreur s'est produite. Veuillez réessayer.";
         }
     }
 }
