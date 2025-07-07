@@ -59,14 +59,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $totalTTC = $totalHT + ($totalHT * $tva / 100);
+    $taxe = $totalHT * $tva / 100;
+    $totalTTC = $totalHT + $taxe;
 
     try {
         $pdo->beginTransaction();
 
         $sqlFacture = "INSERT INTO factures 
-            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation, Conditions, condition_re, Datee, livraison, user_id)  
-            VALUES (:clientid, :n_facture, :type, :tva, :montant_ht, :montant_ttc, :date_creation, :conditions, :condition_re, :date_validite, :livraison, :user_id)";
+            (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation, Conditions, condition_re, Datee, livraison, user_id, taxe)  
+            VALUES (:clientid, :n_facture, :type, :tva, :montant_ht, :montant_ttc, :date_creation, :conditions, :condition_re, :date_validite, :livraison, :user_id, :taxe)";
 
         $stmtFacture = $pdo->prepare($sqlFacture);
         $stmtFacture->execute([
@@ -81,7 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':condition_re' => $condition_re,
             ':date_validite' => $date_validite,
             ':livraison' => $livraison,
-            ':user_id' => $user_id
+            ':user_id' => $user_id,
+            ':taxe' => $taxe
         ]);
 
         $factureID = $pdo->lastInsertId();
@@ -110,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } catch (Exception $e) {
         $pdo->rollBack();
-        echo "<script>alert('Erreur lors de l\'ajout de la facture : " . htmlspecialchars($e->getMessage()) . "');</script>";
+        echo "<script>alert('Erreur lors de l\\'ajout de la facture : " . htmlspecialchars($e->getMessage()) . "');</script>";
     }
 }
 
@@ -131,6 +133,8 @@ if (isset($_GET['show_invoices'])) {
             echo "<div style='border: 1px solid #ccc; margin: 10px; padding: 10px;'>";
             echo "<h4>Numéro de facture : " . htmlspecialchars($facture['N_facture']) . "</h4>";
             echo "<p>Client : " . htmlspecialchars($facture['client_name']) . "</p>";
+            echo "<p>Total HT : " . number_format($facture['Montant_Total_HT'], 2) . " DH</p>";
+            echo "<p>Taxe : " . number_format($facture['taxe'], 2) . " DH</p>";
             echo "<p>Total TTC : " . number_format($facture['Montant_Total_TTC'], 2) . " DH</p>";
 
             $sqlItems = "SELECT * FROM facture_items WHERE FactureID = :factureid ORDER BY ordre";
@@ -140,8 +144,10 @@ if (isset($_GET['show_invoices'])) {
 
             echo "<h5>Articles :</h5><ul>";
             foreach ($items as $item) {
-                echo "<li>" . htmlspecialchars($item['Designation']) . " - Quantité : " . intval($item['Quantite']) .
-                     " - Prix unitaire : " . number_format($item['Prix_Unit'], 2) . " DH - Total HT : " . number_format($item['Montant_HT'], 2) . " DH</li>";
+                echo "<li>" . htmlspecialchars($item['Designation']) . 
+                     " - Quantité : " . intval($item['Quantite']) .
+                     " - Prix unitaire : " . number_format($item['Prix_Unit'], 2) . " DH" .
+                     " - Total HT : " . number_format($item['Montant_HT'], 2) . " DH</li>";
             }
             echo "</ul></div>";
         }
@@ -150,6 +156,7 @@ if (isset($_GET['show_invoices'])) {
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
