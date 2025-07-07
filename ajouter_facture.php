@@ -20,7 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ClientID = $_POST['ClientID'] ?? null;
     $type = $_POST['Type'] ?? '';
     $N_facture = $_POST['N_facture'] ?? '';
-    $tva = 20;
+
+    $tva = isset($_POST['TVA']) ? floatval($_POST['TVA']) : 0;
+    if ($tva < 0) {
+        $tva = 0;
+    }
+
     $date_creation = date('Y-m-d H:i:s');
     $conditions = $_POST['Conditions'] ?? '';
     $date_validite = $_POST['Datee'] ?? '';
@@ -67,14 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $sqlFacture = "INSERT INTO factures 
             (ClientID, N_facture, type, TVA, Montant_Total_HT, Montant_Total_TTC, Date_Creation, Conditions, condition_re, Datee, livraison, user_id, taxe)  
-            VALUES (:clientid, :n_facture, :type, :tva, :montant_ht, :montant_ttc, :date_creation, :conditions, :condition_re, :date_validite, :livraison, :user_id, :taxe)";
+            VALUES (:clientid, :n_facture, :type, :TVA, :montant_ht, :montant_ttc, :date_creation, :conditions, :condition_re, :date_validite, :livraison, :user_id, :taxe)";
 
         $stmtFacture = $pdo->prepare($sqlFacture);
         $stmtFacture->execute([
             ':clientid' => $ClientID,
             ':n_facture' => $N_facture,
             ':type' => $type,
-            ':tva' => $tva,
+            ':TVA' => $tva,
             ':montant_ht' => $totalHT,
             ':montant_ttc' => $totalTTC,
             ':date_creation' => $date_creation,
@@ -113,46 +118,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $pdo->rollBack();
         echo "<script>alert('Erreur lors de l\\'ajout de la facture : " . htmlspecialchars($e->getMessage()) . "');</script>";
-    }
-}
-
-if (isset($_GET['show_invoices'])) {
-    try {
-        $sql = "SELECT f.*, c.NameEntreprise as client_name 
-                FROM factures f 
-                LEFT JOIN liste_fourniseur_client c ON f.ClientID = c.ID 
-                WHERE f.user_id = :user_id
-                ORDER BY f.Date_Creation DESC LIMIT 10";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([':user_id' => $user_id]);
-        $factures = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        echo "<h3>Dernières 10 factures :</h3>";
-        foreach ($factures as $facture) {
-            echo "<div style='border: 1px solid #ccc; margin: 10px; padding: 10px;'>";
-            echo "<h4>Numéro de facture : " . htmlspecialchars($facture['N_facture']) . "</h4>";
-            echo "<p>Client : " . htmlspecialchars($facture['client_name']) . "</p>";
-            echo "<p>Total HT : " . number_format($facture['Montant_Total_HT'], 2) . " DH</p>";
-            echo "<p>Taxe : " . number_format($facture['taxe'], 2) . " DH</p>";
-            echo "<p>Total TTC : " . number_format($facture['Montant_Total_TTC'], 2) . " DH</p>";
-
-            $sqlItems = "SELECT * FROM facture_items WHERE FactureID = :factureid ORDER BY ordre";
-            $stmtItems = $pdo->prepare($sqlItems);
-            $stmtItems->execute([':factureid' => $facture['ID']]);
-            $items = $stmtItems->fetchAll(PDO::FETCH_ASSOC);
-
-            echo "<h5>Articles :</h5><ul>";
-            foreach ($items as $item) {
-                echo "<li>" . htmlspecialchars($item['Designation']) . 
-                     " - Quantité : " . intval($item['Quantite']) .
-                     " - Prix unitaire : " . number_format($item['Prix_Unit'], 2) . " DH" .
-                     " - Total HT : " . number_format($item['Montant_HT'], 2) . " DH</li>";
-            }
-            echo "</ul></div>";
-        }
-    } catch (Exception $e) {
-        echo "Erreur lors de l'affichage des factures : " . htmlspecialchars($e->getMessage());
     }
 }
 ?>
@@ -246,7 +211,7 @@ if (isset($_GET['show_invoices'])) {
                                     placeholder="Montant" onchange="calculateTotal()">
                             </td>
                             <td>
-                                <input type="number" name="TVA" value="20" readonly
+                                <input type="number" name="TVA"
                                     class="form-control rounded-pill bg-secondary bg-opacity-25 border-0">
                             </td>
                             <td>
