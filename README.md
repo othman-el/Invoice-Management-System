@@ -1,10 +1,14 @@
+
+## Authentification page
 <img width="1491" height="945" alt="Image" src="https://github.com/user-attachments/assets/75dc314b-d597-484d-8213-ac2de1f38752" />
 
-#
+---
+## Authentification page
 
 <img width="1632" height="945" alt="enritech xyz_enritech_index php" src="https://github.com/user-attachments/assets/5c5475b7-4896-418c-b1b8-cd51802bfff8" />
 
-#
+---
+##
 
 <img width="1669" height="945" alt="localhost_Gestion_Facturation_Liste_Client php" src="https://github.com/user-attachments/assets/a41697a9-87fc-4b96-8a8c-bf1a4f75f162" />
 
@@ -47,4 +51,5 @@
 #
 
 <img width="1654" height="1214" alt="localhost_Gestion_Facturation_Ajouter_items php" src="https://github.com/user-attachments/assets/995a8a5f-c94d-4560-b98c-a352cb100ec2" />
+
 
